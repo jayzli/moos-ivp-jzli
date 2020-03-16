@@ -1,0 +1,26 @@
+2.118           PID_REPORT           pMarinePID      12:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.223           PID_REPORT           pMarinePID      13:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.223           PID_REPORT           pMarinePID      13:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.323           PID_REPORT           pMarinePID      14:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.323           PID_REPORT           pMarinePID      14:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.423           PID_REPORT           pMarinePID      15:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.423           PID_REPORT           pMarinePID      15:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.524           PID_REPORT           pMarinePID      16:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.524           PID_REPORT           pMarinePID      16:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.628           PID_REPORT           pMarinePID      17:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.628           PID_REPORT           pMarinePID      17:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.732           PID_REPORT           pMarinePID      18:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.732           PID_REPORT           pMarinePID      18:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.835           PID_REPORT           pMarinePID      19:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.835           PID_REPORT           pMarinePID      19:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+2.939           PID_REPORT           pMarinePID      20:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+2.939           PID_REPORT           pMarinePID      20:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+3.044           PID_REPORT           pMarinePID      21:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+3.044           PID_REPORT           pMarinePID      21:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+3.145           PID_REPORT           pMarinePID      22:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+3.145           PID_REPORT           pMarinePID      22:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+3.249           PID_REPORT           pMarinePID      23:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+3.249           PID_REPORT           pMarinePID      23:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+3.350           PID_REPORT           pMarinePID      24:PID_COURSE:  (Want):0.00000 (Curr):180.00000 (Diff):-180.00000 RUDDER:72.00000 
+3.350           PID_REPORT           pMarinePID      24:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 
+3.350           PID_REPORT           pMarinePID      24:PID_SPEED:  (Want):0.00000 (Curr):0.00000 (Diff):0.00000 (Fctr):20.00000 THRUST:0.00000 

@@ -1,0 +1,6 @@
+2.488           APPCAST_REQ_CHARLIE  uMAC_9194       node=charlie,app=all,duration=0.1,key=uMAC_9194startup,thresh=any 
+3.303           APPCAST_REQ_CHARLIE  pMarineViewer   node=charlie,app=uSimMarine,duration=3.0,key=pMarineViewer:shoresideapp,thresh=any 
+3.303           APPCAST_REQ_CHARLIE  pMarineViewer   node=charlie,app=uSimMarine,duration=3.0,key=pMarineViewer:shoresideapp,thresh=any 
+4.311           APPCAST_REQ_CHARLIE  pMarineViewer   node=charlie,app=uSimMarine,duration=3.0,key=pMarineViewer:shoresideapp,thresh=any 
+5.315           APPCAST_REQ_CHARLIE  pMarineViewer   node=charlie,app=uSimMarine,duration=3.0,key=pMarineViewer:shoresideapp,thresh=any 
+5.315           APPCAST_REQ_CHARLIE  pMarineViewer   node=charlie,app=uSimMarine,duration=3.0,key=pMarineViewer:shoresideapp,thresh=any 
