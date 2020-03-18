@@ -1,0 +1,19 @@
+#--------------------------------------------------------
+# The CMakeLists.txt for:                       pTrafficDensity
+# Author(s):                              John Li
+#--------------------------------------------------------
+
+SET(SRC
+  TrafficDensity.cpp
+  TrafficDensity_Info.cpp
+  main.cpp
+)
+
+ADD_EXECUTABLE(pTrafficDensity ${SRC})
+
+TARGET_LINK_LIBRARIES(pTrafficDensity
+   ${MOOS_LIBRARIES}
+   mbutil
+   m
+   pthread)
+

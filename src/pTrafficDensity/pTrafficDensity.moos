@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pTrafficDensity config block
+
+ProcessConfig = pTrafficDensity
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
