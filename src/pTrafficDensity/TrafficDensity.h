@@ -12,8 +12,8 @@
 #include <string>
 #include <vector>
 #include "MOOS/libMOOS/Thirdparty/AppCasting/AppCastingMOOSApp.h"
-#include "NodeRecord.h"
 
+using namespace std;
 class TrafficDensity : public AppCastingMOOSApp
 {
  public:
@@ -26,27 +26,22 @@ class TrafficDensity : public AppCastingMOOSApp
    bool OnConnectToServer();
    bool OnStartUp();
 
+public:
+  bool buildReport();
+  
  protected:
    void RegisterVariables();
+   void handleMailNodeReport(std::string);
 
-  protected: // State Variables (Node Reports)
-  std::string  m_helm_mode;
-  std::string  m_helm_mode_aux;
-  std::string  m_helm_allstop_mode;
-  std::string  m_alt_nav_prefix;
-  std::string  m_alt_nav_name;
-  std::string  m_helm_status_primary;
-  std::string  m_helm_status_standby;
-  double       m_helm_lastmsg;
+  protected:
 
-  NodeRecord   m_record;
-  //NodeRecord   m_record_gt;
-  double       m_record_gt_updated;
+  // State Variables
+  double m_nav_x;
+  double m_nav_y;
+  double m_nav_hdg;
+  double m_nav_spd;
 
-  double       m_nav_xy_updated;
-  double       m_nav_latlon_updated;
-  double       m_nav_xy_updated_gt;
-  double       m_nav_latlon_updated_gt;
+  string m_report;
 
  private: // Configuration variables
 

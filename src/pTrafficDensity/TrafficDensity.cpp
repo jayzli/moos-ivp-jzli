@@ -9,7 +9,6 @@
 #include "MBUtils.h"
 #include "TrafficDensity.h"
 #include <list>
-#include "NodeRecordUtils.h"  
 using namespace std;
 
 //---------------------------------------------------------
@@ -17,9 +16,12 @@ using namespace std;
 
 TrafficDensity::TrafficDensity()
 {
+  m_nav_x   = 0;                                                                 
+  m_nav_y   = 0;                                                                 
+  m_nav_hdg = 0;                                                                 
+  m_nav_spd = 0;     
 
-
-  
+  m_report ="";
 }
 
 //---------------------------------------------------------
@@ -50,22 +52,18 @@ bool TrafficDensity::OnNewMail(MOOSMSG_LIST &NewMail)
     bool   mdbl  = msg.IsDouble();
     bool   mstr  = msg.IsString();
 
-    if(key == "NAV_X") {
-      m_record.setX(dval);
-      m_nav_xy_updated = MOOSTime();
-    }
-    else if(key == "NAV_Y") {
-      m_record.setY(dval);
-      m_nav_xy_updated = MOOSTime();
-    }
-    else if(key == "NAV_LAT") {
-      m_record.setLat(dval);
-      m_nav_latlon_updated = MOOSTime();
-    }
-    else if(key == "NAV_LONG") {
-      m_record.setLon(dval);
-      m_nav_latlon_updated = MOOSTime();
-   }
+    if(key == "NAV_X")                                                           
+      m_nav_x = dval;                                                            
+    else if(key == "NAV_Y")                                                      
+      m_nav_y = dval;                                                            
+    else if(key == "NAV_HEADING")                                                
+      m_nav_hdg = dval;                                                          
+    else if(key == "NAV_SPEED")                                                  
+      m_nav_spd = dval;                                                          
+    else if(key == "NODE_REPORT")                                                
+      handleMailNodeReport(sval);
+    else                                                                         
+      reportRunWarning("Unhandled Mail: " + key);    
 
    }
    return(true);
@@ -77,6 +75,7 @@ bool TrafficDensity::OnNewMail(MOOSMSG_LIST &NewMail)
 bool TrafficDensity::OnConnectToServer()
 {
    RegisterVariables();
+   
    return(true);
 }
 
@@ -86,6 +85,9 @@ bool TrafficDensity::OnConnectToServer()
 
 bool TrafficDensity::Iterate()
 {
+  AppCastingMOOSApp::Iterate();
+  
+  AppCastingMOOSApp::PostReport();
   return(true);
 }
 
@@ -96,20 +98,20 @@ bool TrafficDensity::Iterate()
 bool TrafficDensity::OnStartUp()
 {
   AppCastingMOOSApp::OnStartUp();
-  
+
   list<string> sParams;
   m_MissionReader.EnableVerbatimQuoting(false);
   if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
     list<string>::iterator p;
     for(p=sParams.begin(); p!=sParams.end(); p++) {
-      string line  = *p;
-      string param = tolower(biteStringX(line, '='));
-      string value = line;
+      string original_line = *p;
+      string param = stripBlankEnds(toupper(biteString(*p, '=')));
+      string value = stripBlankEnds(*p);
       
-      if(param == "foo") {
+      if(param == "FOO") {
         //handled
       }
-      else if(param == "bar") {
+      else if(param == "BAR") {
         //handled
       }
     }
@@ -119,21 +121,37 @@ bool TrafficDensity::OnStartUp()
   return(true);
 }
 
+
 //---------------------------------------------------------
 // Procedure: RegisterVariables
 
 void TrafficDensity::RegisterVariables()
 {
-  AppCastingMOOSApp::RegisterVariables();                                        
-                                                                                 
-  Register("NODE_REPORT", 0);                                                    
-  //Register("CONTACT_RESOLVED", 0);                                               
-  //Register("BCM_DISPLAY_RADII", 0);                                              
-  //Register("BCM_ALERT_REQUEST", 0);                                              
-  //Register("BCM_REPORT_REQUEST", 0);                                             
+  AppCastingMOOSApp::RegisterVariables();
+  
+  Register("NODE_REPORT", 0);            
   Register("NAV_X", 0);                                                          
   Register("NAV_Y", 0);                                                          
   Register("NAV_SPEED", 0);                                                      
   Register("NAV_HEADING", 0);
 }
 
+
+
+//---------------------------------------------------------
+//Procedure: handleMailNodeReport()
+void TrafficDensity::handleMailNodeReport(string report)
+{
+  
+  m_report=report;
+   
+}
+
+//---------------------------------------------------------
+//Procedure: buildReport()
+bool TrafficDensity::buildReport()
+{
+  m_msgs << "Newest report" << m_report<< endl;
+
+  return(true);
+}
