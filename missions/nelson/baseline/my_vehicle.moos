@@ -23,6 +23,7 @@ Processconfig = ANTLER
   Run = pHostInfo        @ NewConsole = false
   Run = uFldNodeBroker   @ NewConsole = false
   Run = uFldMessageHandler  @ NewConsole = false
+  Run = pTrafficDensity  @ NewConsole = false
 }
 
 //------------------------------------------------------------
