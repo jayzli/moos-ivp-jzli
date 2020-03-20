@@ -8,7 +8,8 @@
 #include <iterator>
 #include "MBUtils.h"
 #include "TrafficDensity.h"
-
+#include <list>
+#include "NodeRecordUtils.h"  
 using namespace std;
 
 //---------------------------------------------------------
@@ -16,6 +17,9 @@ using namespace std;
 
 TrafficDensity::TrafficDensity()
 {
+
+
+  
 }
 
 //---------------------------------------------------------
@@ -36,8 +40,7 @@ bool TrafficDensity::OnNewMail(MOOSMSG_LIST &NewMail)
    
   for(p=NewMail.begin(); p!=NewMail.end(); p++) {
     CMOOSMsg &msg = *p;
-
-#if 0 // Keep these around just for template
+    
     string key   = msg.GetKey();
     string comm  = msg.GetCommunity();
     double dval  = msg.GetDouble();
@@ -46,9 +49,25 @@ bool TrafficDensity::OnNewMail(MOOSMSG_LIST &NewMail)
     double mtime = msg.GetTime();
     bool   mdbl  = msg.IsDouble();
     bool   mstr  = msg.IsString();
-#endif
+
+    if(key == "NAV_X") {
+      m_record.setX(dval);
+      m_nav_xy_updated = MOOSTime();
+    }
+    else if(key == "NAV_Y") {
+      m_record.setY(dval);
+      m_nav_xy_updated = MOOSTime();
+    }
+    else if(key == "NAV_LAT") {
+      m_record.setLat(dval);
+      m_nav_latlon_updated = MOOSTime();
+    }
+    else if(key == "NAV_LONG") {
+      m_record.setLon(dval);
+      m_nav_latlon_updated = MOOSTime();
    }
-	
+
+   }
    return(true);
 }
 
