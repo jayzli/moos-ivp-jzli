@@ -29,21 +29,22 @@ VNAME3="bravo"          # The third vehicle Community
 VNAME4="charlie"        # The fourth vehicle Community
 VNAME5="delta"          # The fifth vehicle Community
 
-START_POS1="0,-75"      # Start in the middle
-START_POS2="25,0"
-START_POS3="50,0"
-START_POS4="25,-150"
-START_POS5="50,-150"
+START_POS1="-20,-75"      # Start in the middle
+START_POS2="70,0"
+START_POS3="95,0"
+START_POS4="70,-150"
+START_POS5="95,-150"
 
-LOITER_POS1="x=100,y=-75"
-LOITER_POS2="x=125,y=-75"
-LOITER_POS3="x=100,y=-75"
-LOITER_POS4="x=75,y=-75"
-LOITER_POS5="x=50,y=-75"
+LOITER_POS1="180,-75"
+LOITER_POS2="70,-150"
+LOITER_POS3="95,-150"
+LOITER_POS4="70,0"
+LOITER_POS5="95,0"
 
 SHORE_LISTEN="9300"
 
-nsplug meta_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
+#The testing vehicle's metafiles are called my_vehicle.moos/bhv
+nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
     VNAME=$VNAME1          SHARE_LISTEN="9301"              \
     VPORT="9001"           SHORE_LISTEN=$SHORE_LISTEN       \
     START_POS=$START_POS1
@@ -59,7 +60,7 @@ nsplug meta_vehicle.moos targ_$VNAME3.moos -f WARP=$TIME_WARP \
     START_POS=$START_POS3
     
 nsplug meta_vehicle.moos targ_$VNAME4.moos -f WARP=$TIME_WARP \
-    VNAME=$VNAME4          SHARE_LISTEN="9304"              \ 
+    VNAME=$VNAME4          SHARE_LISTEN="9304"              \
     VPORT="9004"           SHORE_LISTEN=$SHORE_LISTEN       \
     START_POS=$START_POS4
 
@@ -72,7 +73,7 @@ nsplug meta_shoreside.moos targ_shoreside.moos -f WARP=$TIME_WARP \
     SNAME="shoreside"  SHARE_LISTEN=$SHORE_LISTEN                 \
     SPORT="9000"
 
-nsplug meta_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
+nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
     START_POS=$START_POS1 LOITER_POS=$LOITER_POS1
 
 nsplug meta_vehicle.bhv targ_$VNAME2.bhv -f VNAME=$VNAME2     \
