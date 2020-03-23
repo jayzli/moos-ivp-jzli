@@ -30,6 +30,8 @@ DensityCounter::DensityCounter()
   m_contact_y=0;
   m_contact_heading=0;
   m_contact_speed=0;
+
+  m_step = .1;  //in seconds
   
   m_density = 0;
 }
@@ -48,11 +50,39 @@ DensityCounter::~DensityCounter()
 bool DensityCounter::InRange(double m_range)
 {
   bool in_range = false;
-  //put this inside loop
-  //increasement to new positions
-  //calculate distance between ownship and contact
-  //if distance less than m_range, return true
   
-    
+  //loop until destination
+  IncrementStep(m_step);
+  double dis_x = m_contact_x - m_own_x;
+  double dis_y = m_contact_y - m_own_y;
+  double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
+  if (range < m_range){
+    in_range = true;
+  }
+		      
   return (in_range);
  }
+
+//----------------------------------------------------------
+// Increment positions based on heading/speed
+ void IncrementStep (double m_step)
+ {
+   m_contact_x = m_contact_x + m_step * m_speed * cos(m_contact_heading*MPI/180);
+   m_contact_y = m_contact_y + m_step * m_speed * sin(m_contact_heading*MPI/180);
+
+    m_own_x = m_own_x + m_step * m_speed * cos(m_own_heading*MPI/180);
+    m_own_y =  m_own_y + m_step * m_speed * sin(m_own_heading*MPI/180);
+}
+
+//-------------------------------------------------------------
+// Process noderecord class
+#if 0
+void ProcessRecord(NodeRecord m_record)
+
+{
+  m_contact_x =  m_record.getX();
+  m_contact_y =  m_record.getY();
+  m_contact_heading =  m_record.getHeading();
+  m_contact_speed =  m_record.getSpeed();
+}
+#endif

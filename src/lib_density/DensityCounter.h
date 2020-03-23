@@ -9,6 +9,7 @@
 #define DensityCounter_HEADER
 
 #include <string>
+#include <NodeRecord.h>
 
 using namespace std;
 
@@ -16,24 +17,28 @@ class DensityCounter
 {
  public:
   DensityCounter();
-  ~DensityCounter() {};
+  ~DensityCounter();
 
-  
  protected:
   bool InRange(double m_range);
- 
+  void ProcessRecord (NodeRecord m_record);
+  void IncrementStep (double m_step);
+  
  protected: // State variables
   double  m_own_x ;
   double  m_own_y;
   double  m_own_heading;
-  bool    m_own_speed;
+  double    m_own_speed;
 
   double  m_contact_x ;
   double  m_contact_y;
   double  m_contact_heading;
-  bool    m_contact_speed;
+  double    m_contact_speed;
+
+  NodeRecord m_record;
   
   double m_range;
+  double m_step;
   
   int m_density; 
 };
