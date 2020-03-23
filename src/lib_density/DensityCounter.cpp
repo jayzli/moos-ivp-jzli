@@ -65,19 +65,19 @@ bool DensityCounter::InRange(double m_range)
 
 //----------------------------------------------------------
 // Increment positions based on heading/speed
- void IncrementStep (double m_step)
+void DensityCounter::IncrementStep (double m_step)
  {
-   m_contact_x = m_contact_x + m_step * m_speed * cos(m_contact_heading*MPI/180);
-   m_contact_y = m_contact_y + m_step * m_speed * sin(m_contact_heading*MPI/180);
+   m_contact_x = m_contact_x + m_step * m_contact_speed * cos(m_contact_heading*MPI/180);
+   m_contact_y = m_contact_y + m_step * m_contact_speed * sin(m_contact_heading*MPI/180);
 
-    m_own_x = m_own_x + m_step * m_speed * cos(m_own_heading*MPI/180);
-    m_own_y =  m_own_y + m_step * m_speed * sin(m_own_heading*MPI/180);
+    m_own_x = m_own_x + m_step * m_own_speed * cos(m_own_heading*MPI/180);
+    m_own_y =  m_own_y + m_step * m_own_speed * sin(m_own_heading*MPI/180);
 }
 
 //-------------------------------------------------------------
 // Process noderecord class
-#if 0
-void ProcessRecord(NodeRecord m_record)
+
+void DensityCounter::ProcessRecord(NodeRecord m_record)
 
 {
   m_contact_x =  m_record.getX();
@@ -85,4 +85,4 @@ void ProcessRecord(NodeRecord m_record)
   m_contact_heading =  m_record.getHeading();
   m_contact_speed =  m_record.getSpeed();
 }
-#endif
+

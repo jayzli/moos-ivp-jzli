@@ -28,7 +28,7 @@ class DensityCounter
   double  m_own_x ;
   double  m_own_y;
   double  m_own_heading;
-  double    m_own_speed;
+  double  m_own_speed;
 
   double  m_contact_x ;
   double  m_contact_y;
