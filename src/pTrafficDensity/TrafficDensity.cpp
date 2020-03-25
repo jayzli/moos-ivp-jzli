@@ -10,7 +10,8 @@
 #include "TrafficDensity.h"
 #include <list>
 #include <stdlib.h>
-#include "DensityCounter.h"
+#include "NodeRecordUtils.h"
+
 using namespace std;
 
 //---------------------------------------------------------
@@ -149,7 +150,7 @@ void TrafficDensity::RegisterVariables()
 void TrafficDensity::handleMailNodeReport(string report)
 {
   
-  m_report=report;
+  NodeRecord new_node_record = string2NodeRecord(report, true);m_report=report;
    
 }
 
