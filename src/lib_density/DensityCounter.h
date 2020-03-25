@@ -19,6 +19,11 @@ class DensityCounter
   DensityCounter();
   ~DensityCounter();
 
+  void setRange(double v)       {m_range=v;}
+  void setStep(double v)          {m_step=v;}
+
+  int getDensity() const         {return(m_density);}
+  
  protected:
   bool InRange(double m_range);
   void ProcessRecord (NodeRecord m_record);
@@ -36,7 +41,8 @@ class DensityCounter
   double    m_contact_speed;
 
   NodeRecord m_record;
-  
+
+  //Configuration Variables;
   double m_range;
   double m_step;
   

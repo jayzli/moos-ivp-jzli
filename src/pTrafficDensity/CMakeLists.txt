@@ -14,6 +14,6 @@ ADD_EXECUTABLE(pTrafficDensity ${SRC})
 TARGET_LINK_LIBRARIES(pTrafficDensity
    ${MOOS_LIBRARIES}
    mbutil
-   m
-   pthread)
+   pthread
+   contacts)
 
