@@ -21,7 +21,7 @@ class DensityCounter
 
   void setRange(double v)       {m_range=v;}
   void setStep(double v)          {m_step=v;}
-
+  void setGoal(double v)          {m_goal=v;}
   int getDensity() const         {return(m_density);}
   
  protected:
@@ -43,8 +43,9 @@ class DensityCounter
   NodeRecord m_record;
 
   //Configuration Variables;
-  double m_range;
-  double m_step;
+  double m_range;  // Range is the distance limit for density calculation 
+  double m_step;  // Step is the temporal increment in seconds 
+  double m_goal;  // Goal is the distance to destination
   
   int m_density; 
 };

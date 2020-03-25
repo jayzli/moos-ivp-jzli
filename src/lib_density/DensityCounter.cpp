@@ -32,6 +32,7 @@ DensityCounter::DensityCounter()
   m_contact_speed=0;
 
   m_step = .1;  //in seconds
+  m_range = 10; //in meters
   
   m_density = 0;
 }
@@ -50,16 +51,19 @@ DensityCounter::~DensityCounter()
 bool DensityCounter::InRange(double m_range)
 {
   bool in_range = false;
-  
-  //loop until destination
-  IncrementStep(m_step);
-  double dis_x = m_contact_x - m_own_x;
-  double dis_y = m_contact_y - m_own_y;
-  double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
-  if (range < m_range){
-    in_range = true;
+  double step_limit = m_goal/m_own_speed/m_step;
+  //Distance to goal divided by speed of own ship gives time to destination.
+  //Time to distination divided by step size gives number of steps needed
+  for (int i=1; i<step_limit; i++) {
+    IncrementStep(m_step);
+    double dis_x = m_contact_x - m_own_x;
+    double dis_y = m_contact_y - m_own_y;
+    double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
+    if (range < m_range){
+      in_range = true;
+    }
   }
-		      
+
   return (in_range);
  }
 
