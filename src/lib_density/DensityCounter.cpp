@@ -31,7 +31,7 @@ DensityCounter::DensityCounter()
   m_contact_heading=0;
   m_contact_speed=0;
 
-  m_step = .1;  //in seconds
+  m_step = .5;  //in seconds
   m_range = 10; //in meters
   
   m_density = 0;

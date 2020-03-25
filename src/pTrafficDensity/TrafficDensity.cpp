@@ -9,6 +9,8 @@
 #include "MBUtils.h"
 #include "TrafficDensity.h"
 #include <list>
+#include <stdlib.h>
+#include "DensityCounter.h"
 using namespace std;
 
 //---------------------------------------------------------
@@ -16,6 +18,10 @@ using namespace std;
 
 TrafficDensity::TrafficDensity()
 {
+  // Configuration Variables
+  m_range = 10; //default to 10 meters
+  m_step = 10;//defaults to .5 seconds
+  
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                 
   m_nav_hdg = 0;                                                                 
@@ -108,11 +114,11 @@ bool TrafficDensity::OnStartUp()
       string param = stripBlankEnds(toupper(biteString(*p, '=')));
       string value = stripBlankEnds(*p);
       
-      if(param == "FOO") {
-        //handled
+      if(param == "step_size") {
+        m_range = atof(value.c_str());
       }
-      else if(param == "BAR") {
-        //handled
+      else if(param == "range_limit") {
+        m_step = atof(value.c_str());
       }
     }
   }

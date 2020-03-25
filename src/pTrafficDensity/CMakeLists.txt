@@ -15,5 +15,6 @@ TARGET_LINK_LIBRARIES(pTrafficDensity
    ${MOOS_LIBRARIES}
    mbutil
    pthread
-   contacts)
+   contacts
+   density)
 
