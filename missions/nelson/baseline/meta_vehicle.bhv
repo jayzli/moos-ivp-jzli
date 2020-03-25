@@ -35,7 +35,7 @@ Behavior = BHV_Waypoint
   condition = MODE==LOITERING
   runflag    = VEHICLE_UNDERWAY = TRUE                                            
   endflag   = RETURN = true
-  endflag   = LOITER = false
+  endflag   = LOITER = false					
 
    speed = $(TRANSIT_SPEED)
    radius = 3.0
