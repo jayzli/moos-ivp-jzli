@@ -153,7 +153,6 @@ void TrafficDensity::handleMailNodeReport(string report)
 {
   NodeRecord new_node_record = string2NodeRecord(report, true);
   m_density_counter.ProcessRecord (new_node_record);
-
 }
 
 //---------------------------------------------------------
