@@ -28,7 +28,7 @@ TrafficDensity::TrafficDensity()
   m_nav_hdg = 0;                                                                 
   m_nav_spd = 0;     
 
-  m_report ="";
+  m_report ="no vehicle in range";
 }
 
 //---------------------------------------------------------
@@ -151,7 +151,6 @@ void TrafficDensity::RegisterVariables()
 //Procedure: handleMailNodeReport()
 void TrafficDensity::handleMailNodeReport(string report)
 {
-  
   NodeRecord new_node_record = string2NodeRecord(report, true);
   m_density_counter.ProcessRecord (new_node_record);
 
