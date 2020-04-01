@@ -1,4 +1,4 @@
-/************************************************************/
+ /************************************************************/
 /*    NAME: John Li                                         */
 /*    ORGN: MIT                                             */
 /*    FILE: TrafficDensity.cpp                              */
@@ -21,7 +21,7 @@ TrafficDensity::TrafficDensity()
 {
   // Configuration Variables
   m_range = 10; //default to 10 meters
-  m_step = 10;//defaults to .5 seconds
+  m_step = .5;//defaults to .5 seconds
   
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                 
@@ -93,6 +93,10 @@ bool TrafficDensity::OnConnectToServer()
 bool TrafficDensity::Iterate()
 {
   AppCastingMOOSApp::Iterate();
+  if ( m_density_counter.InRange(m_range)){
+    m_report = m_density_counter.getName();
+    m_report = m_report + "is in range";
+  }
   
   AppCastingMOOSApp::PostReport();
   return(true);
@@ -143,26 +147,21 @@ void TrafficDensity::RegisterVariables()
   Register("NAV_HEADING", 0);
 }
 
-
-
 //---------------------------------------------------------
 //Procedure: handleMailNodeReport()
 void TrafficDensity::handleMailNodeReport(string report)
 {
   
-  NodeRecord new_node_record = string2NodeRecord(report, true)
-  
+  NodeRecord new_node_record = string2NodeRecord(report, true);
+  m_density_counter.ProcessRecord (new_node_record);
 
-
-  m_report=report;
-   
 }
 
 //---------------------------------------------------------
 //Procedure: buildReport()
 bool TrafficDensity::buildReport()
 {
-  m_msgs << "Newest report" << m_report<< endl;
+  m_msgs << "Contact in range report" << m_report<< endl;
 
   return(true);
 }

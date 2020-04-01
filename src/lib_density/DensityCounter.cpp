@@ -88,5 +88,6 @@ void DensityCounter::ProcessRecord(NodeRecord m_record)
   m_contact_y =  m_record.getY();
   m_contact_heading =  m_record.getHeading();
   m_contact_speed =  m_record.getSpeed();
+  m_contact_name = m_record.getName();
 }
 

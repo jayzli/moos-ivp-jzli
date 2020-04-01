@@ -23,12 +23,13 @@ class DensityCounter
   void setStep(double v)          {m_step=v;}
   void setGoal(double v)          {m_goal=v;}
   int getDensity() const         {return(m_density);}
+  string getName() const      {return(m_contact_name);}
   
- protected:
+ public:
   bool InRange(double m_range);
   void ProcessRecord (NodeRecord m_record);
   void IncrementStep (double m_step);
-  
+
  protected: // State variables
   double  m_own_x ;
   double  m_own_y;
@@ -39,6 +40,7 @@ class DensityCounter
   double  m_contact_y;
   double  m_contact_heading;
   double    m_contact_speed;
+  string m_contact_name;
 
   NodeRecord m_record;
 
