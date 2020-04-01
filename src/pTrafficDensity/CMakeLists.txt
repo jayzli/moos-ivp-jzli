@@ -13,8 +13,11 @@ ADD_EXECUTABLE(pTrafficDensity ${SRC})
 
 TARGET_LINK_LIBRARIES(pTrafficDensity
    ${MOOS_LIBRARIES}
+   ${MOOSGeodesy_LIBRARIES}
    mbutil
    pthread
    contacts
-   density)
+   density
+   geometry
+)
 

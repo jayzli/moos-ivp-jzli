@@ -150,7 +150,11 @@ void TrafficDensity::RegisterVariables()
 void TrafficDensity::handleMailNodeReport(string report)
 {
   
-  NodeRecord new_node_record = string2NodeRecord(report, true);m_report=report;
+  NodeRecord new_node_record = string2NodeRecord(report, true)
+  
+
+
+  m_report=report;
    
 }
 

@@ -1,7 +1,7 @@
 /*****************************************************************/
 /*    NAME: John Li                                     */
 /*    ORGN: Dept of Mechanical Eng / CSAIL, MIT Cambridge MA     */
-/*    FILE: DensityCounter.cpp                                        */
+/*    FILE: DensityCounter.h                                        */
 /*    DATE: Mar 19th 2020                                        */
 /*****************************************************************/
  

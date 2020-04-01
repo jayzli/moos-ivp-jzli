@@ -38,7 +38,7 @@ ProcessConfig = uFldNodeComms
   min_msg_interval = 15
   max_msg_length   = 1000 
 
-  view_node_rpt_pulses = true
+  view_node_rpt_pulses = false
 }
 
 //--------------------------------------------------
@@ -122,7 +122,7 @@ ProcessConfig = pMarineViewer
   vehicles_shape_scale = 1.5
   vehicles_name_viewable = names
 
-  circle_viewable_all = false
+  circle_viewable_all = true
   
   appcast_viewable = true
   appcast_color_scheme = indigo

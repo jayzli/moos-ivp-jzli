@@ -13,6 +13,7 @@
 #include <vector>
 #include "MOOS/libMOOS/Thirdparty/AppCasting/AppCastingMOOSApp.h"
 #include "DensityCounter.h"
+//#include "MOOS/libMOOSGeodesy/MOOSGeodesy.h"
 
 using namespace std;
 class TrafficDensity : public AppCastingMOOSApp
@@ -39,8 +40,8 @@ public:
   double m_range;  // Range is the distance limit for density calculation 
   double m_step;  // Step is the temporal increment in seconds 
 
-  //Goal is not a configuration variable for this app. It is not set 
-
+  //Goal is not a configuration variable for this app. 
+ 
   // State Variables
   double m_nav_x;
   double m_nav_y;
