@@ -34,12 +34,16 @@ public:
  protected:
    void RegisterVariables();
    void handleMailNodeReport(std::string);
-
+  void ChangeHeading(double m_heading_range);//not exactly accurate
+  void ChangeSpeed(double m_speed_range);//not exactly accurate
+  
   protected:
-  //Configuration Variables, those set in behavior file
+  //Configuration Variables, those set in my_vehicle.moos  file
   double m_range;  // Range is the distance limit for density calculation 
   double m_step;  // Step is the temporal increment in seconds 
-
+  double m_heading_range;// Range of angles to consider
+  double m_speed_range;// Range of speeds to consider
+  
   //Goal is not a configuration variable for this app. 
  
   // State Variables
@@ -51,11 +55,13 @@ public:
 
   DensityCounter m_density_counter;
 
+  int m_contact_count;
+  
   string m_report;
 
  private: // Configuration variables
 
- private: // State variables
+private: // State variables
 
 
   

@@ -22,13 +22,18 @@ TrafficDensity::TrafficDensity()
   // Configuration Variables
   m_range = 10; //default to 10 meters
   m_step = .5;//defaults to .5 seconds
-  
+  m_heading_range  = 5;
+  m_speed_range = 1;
+
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                 
   m_nav_hdg = 0;                                                                 
   m_nav_spd = 0;     
 
   m_report ="no vehicle in range";
+
+  m_contact_count = 0;
+  
 }
 
 //---------------------------------------------------------
@@ -93,11 +98,20 @@ bool TrafficDensity::OnConnectToServer()
 bool TrafficDensity::Iterate()
 {
   AppCastingMOOSApp::Iterate();
-  if ( m_density_counter.InRange(m_range)){
-    m_report = m_density_counter.getName();
-    m_report = m_report + "is in range";
+
+  //trial code only considers increasing speed and heading
+  for (int i=1; i< 90; i++){
+    ChangeHeading(m_heading_range);
+    for (int j=1; 1<10; j++){
+      ChangeSpeed(m_speed_range);
+      // check to see if this particular contact will be in range 
+      if ( m_density_counter.InRange(m_range)){
+      //  m_report = m_density_counter.getName();
+        m_report = m_report + "is in range";
+	m_contact_count ++;
+      }
+    }
   }
-  
   AppCastingMOOSApp::PostReport();
   return(true);
 }
@@ -110,6 +124,7 @@ bool TrafficDensity::OnStartUp()
 {
   AppCastingMOOSApp::OnStartUp();
 
+  
   list<string> sParams;
   m_MissionReader.EnableVerbatimQuoting(false);
   if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
@@ -154,6 +169,22 @@ void TrafficDensity::handleMailNodeReport(string report)
   NodeRecord new_node_record = string2NodeRecord(report, true);
   m_density_counter.ProcessRecord (new_node_record);
 }
+
+//---------------------------------------------------------
+//Procedure: handleMailNodeReport()
+void TrafficDensity::ChangeHeading(double m_heading_range)
+{
+  m_nav_hdg = m_nav_hdg + m_heading_range;
+}
+
+
+//---------------------------------------------------------
+//Procedure: handleMailNodeReport()
+void TrafficDensity::ChangeSpeed(double m_speed_range)
+{
+  m_nav_spd = m_nav_spd + m_speed_range;
+}
+
 
 //---------------------------------------------------------
 //Procedure: buildReport()
