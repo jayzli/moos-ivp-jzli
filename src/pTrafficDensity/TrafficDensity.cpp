@@ -100,10 +100,11 @@ bool TrafficDensity::Iterate()
   AppCastingMOOSApp::Iterate();
 
   //trial code only considers increasing speed and heading
-  for (int i=1; i< 90; i++){
-    ChangeHeading(m_heading_range);
-    for (int j=1; 1<10; j++){
-      ChangeSpeed(m_speed_range);
+  for (int i=1; i< m_heading_range; i++){
+    ChangeHeading(i);
+    for (int j=1; j<m_speed_range; j++){
+      ChangeSpeed(j);
+      SetOwnShip();
       // check to see if this particular contact will be in range 
       if ( m_density_counter.InRange(m_range)){
       //  m_report = m_density_counter.getName();
@@ -182,9 +183,18 @@ void TrafficDensity::ChangeHeading(double m_heading_range)
 //Procedure: handleMailNodeReport()
 void TrafficDensity::ChangeSpeed(double m_speed_range)
 {
-  m_nav_spd = m_nav_spd + m_speed_range;
+  m_nav_spd = m_speed_range;
 }
 
+//---------------------------------------------------------
+//Procedure: handleMailNodeReport()
+void TrafficDensity::SetOwnShip()
+{
+  m_density_counter.setX(m_nav_x);
+  m_density_counter.setY(m_nav_y);
+  m_density_counter.setHeading(m_nav_hdg);
+  m_density_counter.setSpeed(m_nav_spd);
+}
 
 //---------------------------------------------------------
 //Procedure: buildReport()

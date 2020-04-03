@@ -29,6 +29,10 @@ class DensityCounter
   bool InRange(double m_range);
   void ProcessRecord (NodeRecord m_record);
   void IncrementStep (double m_step);
+  void setX(double v)                        {m_own_x=v;}
+   void setY(double v)                       {m_own_y=v;}
+   void setHeading(double v)          {m_own_heading=v;}
+   void setSpeed(double v)             {m_own_speed=v;}
 
  protected: // State variables
   double  m_own_x ;
