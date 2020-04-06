@@ -33,7 +33,7 @@ TrafficDensity::TrafficDensity()
 
   m_report ="no vehicle in range";
 
-  m_contact_count = 0;
+  //m_contact_count[0] = 0;
   
 }
 
@@ -106,12 +106,15 @@ bool TrafficDensity::Iterate()
   for (int j=1; j<m_speed_range; j++){
       ChangeSpeed(j);
       SetOwnShip();
+      int counter=0;
       // check to see if this particular contact will be in range 
       if ( m_density_counter.InRange(m_range)){
       //  m_report = m_density_counter.getName();
         m_report = m_report + "is in range";
-	m_contact_count ++;
+	counter++;
       }
+      m_contact_count.push_back(counter);
+      
   }
 
   AppCastingMOOSApp::PostReport();
@@ -211,7 +214,7 @@ bool TrafficDensity::buildReport()
   //very hacky, need to pick a strcture to hold results
   for (double i =0 ; i < m_speed_range; i++) {
     string speed_str = doubleToStringX(i/10);
-    string contacts = uintToString(m_contact_count);
+    string contacts = intToString(m_contact_count[i]);
     actab<<speed_str<<contacts;
    }
   m_msgs << actab.getFormattedString();
