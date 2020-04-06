@@ -56,7 +56,7 @@ public:
 
   DensityCounter m_density_counter;
 
-  int m_contact_count;
+  unsigned int m_contact_count;
   
   string m_report;
 

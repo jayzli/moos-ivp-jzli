@@ -24,7 +24,7 @@ TrafficDensity::TrafficDensity()
   m_range = 10; //default to 10 meters
   m_step = .5;//defaults to .5 seconds
   m_heading_range  = 5;
-  m_speed_range = 1;
+  m_speed_range = 150;//15 knots max
 
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                 
@@ -101,9 +101,9 @@ bool TrafficDensity::Iterate()
   AppCastingMOOSApp::Iterate();
 
   //trial code only considers increasing speed and heading
-  for (int i=1; i< m_heading_range; i++){
-    ChangeHeading(i);
-    for (int j=1; j<m_speed_range; j++){
+  //for (int i=1; i< m_heading_range; i++){
+  //  ChangeHeading(i);
+  for (int j=1; j<m_speed_range; j++){
       ChangeSpeed(j);
       SetOwnShip();
       // check to see if this particular contact will be in range 
@@ -112,8 +112,8 @@ bool TrafficDensity::Iterate()
         m_report = m_report + "is in range";
 	m_contact_count ++;
       }
-    }
   }
+
   AppCastingMOOSApp::PostReport();
   return(true);
 }
@@ -184,7 +184,7 @@ void TrafficDensity::ChangeHeading(double m_heading_range)
 //Procedure: handleMailNodeReport()
 void TrafficDensity::ChangeSpeed(double m_speed_range)
 {
-  m_nav_spd = m_speed_range;
+  m_nav_spd = m_speed_range/10;
 }
 
 //---------------------------------------------------------
@@ -208,6 +208,13 @@ bool TrafficDensity::buildReport()
   actab.setColumnJustify(1, "right");
   actab << "Speed | Peak Density";
   actab.addHeaderLines();
+  //very hacky, need to pick a strcture to hold results
+  for (double i =0 ; i < m_speed_range; i++) {
+    string speed_str = doubleToStringX(i/10);
+    string contacts = uintToString(m_contact_count);
+    actab<<speed_str<<contacts;
+   }
   m_msgs << actab.getFormattedString();
+  
   return(true);
 }
