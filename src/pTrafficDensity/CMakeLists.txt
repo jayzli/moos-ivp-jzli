@@ -15,6 +15,7 @@ TARGET_LINK_LIBRARIES(pTrafficDensity
    ${MOOS_LIBRARIES}
    ${MOOSGeodesy_LIBRARIES}
    mbutil
+   apputil
    pthread
    contacts
    density

@@ -25,6 +25,8 @@ DensityCounter::DensityCounter()
   m_own_y =0;
   m_own_heading=0;
   m_own_speed=0;
+  m_goal_x=0;
+  m_goal_y=0;
 
   m_contact_x=0 ;
   m_contact_y=0;
@@ -51,6 +53,7 @@ DensityCounter::~DensityCounter()
 bool DensityCounter::InRange(double m_range)
 {
   bool in_range = false;
+  calculateGoal();
   double step_limit = m_goal/m_own_speed/m_step;
   //Distance to goal divided by speed of own ship gives time to destination.
   //Time to distination divided by step size gives number of steps needed
@@ -91,3 +94,11 @@ void DensityCounter::ProcessRecord(NodeRecord m_record)
   m_contact_name = m_record.getName();
 }
 
+//----------------------------------------------------------
+// Calculate distance to goal
+void DensityCounter::calculateGoal ()
+ {
+     double dis_x = m_goal_x - m_own_x;
+    double dis_y = m_goal_y - m_own_y;
+    m_goal =  sqrt((dis_x*dis_x)+(dis_y*dis_y));
+}

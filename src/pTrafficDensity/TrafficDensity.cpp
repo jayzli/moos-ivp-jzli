@@ -11,6 +11,7 @@
 #include <list>
 #include <stdlib.h>
 #include "NodeRecordUtils.h"
+#include "ACTable.h"
 
 using namespace std;
 
@@ -194,13 +195,19 @@ void TrafficDensity::SetOwnShip()
   m_density_counter.setY(m_nav_y);
   m_density_counter.setHeading(m_nav_hdg);
   m_density_counter.setSpeed(m_nav_spd);
+  m_density_counter.setGoalX(100);
+  m_density_counter.setGoalY(-75);
 }
 
 //---------------------------------------------------------
 //Procedure: buildReport()
 bool TrafficDensity::buildReport()
 {
-  m_msgs << "Contact in range report" << m_report<< endl;
-
+  m_msgs << "Speed choices" << endl;
+  ACTable actab(2,5);
+  actab.setColumnJustify(1, "right");
+  actab << "Speed | Peak Density";
+  actab.addHeaderLines();
+  m_msgs << actab.getFormattedString();
   return(true);
 }

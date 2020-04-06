@@ -24,6 +24,7 @@ class DensityCounter
   void setGoal(double v)          {m_goal=v;}
   int getDensity() const         {return(m_density);}
   string getName() const      {return(m_contact_name);}
+  void calculateGoal();
   
  public:
   bool InRange(double m_range);
@@ -33,12 +34,16 @@ class DensityCounter
    void setY(double v)                       {m_own_y=v;}
    void setHeading(double v)          {m_own_heading=v;}
    void setSpeed(double v)             {m_own_speed=v;}
+  void setGoalX(double v)                        {m_goal_x=v;}
+   void setGoalY(double v)                       {m_goal_y=v;}
 
  protected: // State variables
   double  m_own_x ;
   double  m_own_y;
   double  m_own_heading;
   double  m_own_speed;
+  double  m_goal_x ;
+  double  m_goal_y;
 
   double  m_contact_x ;
   double  m_contact_y;
