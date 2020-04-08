@@ -28,6 +28,7 @@ class DensityCounter
   
  public:
   bool InRange(double m_range);
+  double calRange();
   void ProcessRecord (NodeRecord m_record);
   void IncrementStep (double m_step);
   void setX(double v)                        {m_own_x=v;}
@@ -36,6 +37,7 @@ class DensityCounter
    void setSpeed(double v)             {m_own_speed=v;}
   void setGoalX(double v)                        {m_goal_x=v;}
    void setGoalY(double v)                       {m_goal_y=v;}
+  
 
  protected: // State variables
   double  m_own_x ;
@@ -45,14 +47,14 @@ class DensityCounter
   double  m_goal_x ;
   double  m_goal_y;
 
-  double  m_contact_x ;
-  double  m_contact_y;
-  double  m_contact_heading;
-  double    m_contact_speed;
+  double m_contact_x ;
+  double m_contact_y;
+  double m_contact_heading;
+  double m_contact_speed;
   string m_contact_name;
 
   NodeRecord m_record;
-
+  
   //Configuration Variables;
   double m_range;  // Range is the distance limit for density calculation 
   double m_step;  // Step is the temporal increment in seconds 

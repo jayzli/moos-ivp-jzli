@@ -105,15 +105,30 @@ bool TrafficDensity::Iterate()
   //  ChangeHeading(i);
   for (int j=1; j<m_speed_range; j++){
       ChangeSpeed(j);
-      SetOwnShip();
       int counter=0;
+      string vname="no vessel in range";
+      double min_cpa=m_range;
       // check to see if this particular contact will be in range 
-      if ( m_density_counter.InRange(m_range)){
-      //  m_report = m_density_counter.getName();
-        m_report = m_report + "is in range";
-	counter++;
-      }
-      m_contact_count.push_back(counter);
+      map<string, DensityCounter>::iterator q;
+      for (q=m_map_density_counter.begin(); q!=m_map_density_counter.end(); q++){
+        string     contact_name = q->first;
+        DensityCounter density_counter  = q->second;
+
+	SetOwnShip(density_counter);
+	double cpa = density_counter.calRange();
+	if (cpa<m_range){
+	  counter++;
+	  }
+	if (cpa<min_cpa){
+	  vname=contact_name;
+	  min_cpa=cpa;
+	  }
+        }
+	//record result for this particulat speed
+       string speed_str = doubleToStringX(m_nav_spd);
+       m_map_contact_count[speed_str]=counter;
+       m_map_closest_contact[speed_str]=vname;
+       m_map_closest_CPA[speed_str]=min_cpa;
       
   }
 
@@ -178,10 +193,25 @@ void TrafficDensity::handleMailNodeReport(string report)
 {
   NodeRecord new_node_record = string2NodeRecord(report, true);
   string vname = new_node_record.getName();
+  //ignore ownship
   if (vname == m_ownship)
     return;
+
+  //check to see if it is a new contact
+  bool newly_known_vehicle = false;
+  if(m_map_density_counter.count(vname) == 0)
+    newly_known_vehicle = true; 
   
-  m_density_counter.ProcessRecord (new_node_record);
+  //if new contact,  process using density counter
+  if (newly_known_vehicle) {
+    DensityCounter new_density_counter;
+    new_density_counter.ProcessRecord (new_node_record);
+    m_map_density_counter[vname]=new_density_counter;
+  }
+
+  //if existing contact, update information
+  if (! newly_known_vehicle)
+    m_map_density_counter[vname].ProcessRecord(new_node_record);
 }
 
 //---------------------------------------------------------
@@ -201,14 +231,14 @@ void TrafficDensity::ChangeSpeed(double m_speed_range)
 
 //---------------------------------------------------------
 //Procedure: handleMailNodeReport()
-void TrafficDensity::SetOwnShip()
+void TrafficDensity::SetOwnShip(DensityCounter density_counter)
 {
-  m_density_counter.setX(m_nav_x);
-  m_density_counter.setY(m_nav_y);
-  m_density_counter.setHeading(m_nav_hdg);
-  m_density_counter.setSpeed(m_nav_spd);
-  m_density_counter.setGoalX(100);
-  m_density_counter.setGoalY(-75);
+  density_counter.setX(m_nav_x);
+  density_counter.setY(m_nav_y);
+  density_counter.setHeading(m_nav_hdg);
+  density_counter.setSpeed(m_nav_spd);
+  density_counter.setGoalX(100);
+  density_counter.setGoalY(-75);
 }
 
 //---------------------------------------------------------
@@ -217,15 +247,19 @@ bool TrafficDensity::buildReport()
 {
   m_msgs <<m_ownship<< "'s speed choices" << endl;
   m_msgs <<"------------------------------------------"<< endl;
-  ACTable actab(2,5);
+  ACTable actab(4,5);
   actab.setColumnJustify(1, "right");
-  actab << "Speed | Peak Density";
+  actab << "Speed | Peak Density | Closest | min CPA";
   actab.addHeaderLines();
-  //very hacky, need to pick a strcture to hold results
-  for (double i =0 ; i < m_speed_range; i++) {
-    string speed_str = doubleToStringX(i/10);
-    string contacts = intToString(m_contact_count[i]);
-    actab<<speed_str<<contacts;
+
+  map<string, int>::iterator p;
+  for(p=m_map_contact_count.begin(); p!=m_map_contact_count.end(); p++) {
+    string speed_str = p->first;
+    double contact_count = p->second;
+    string count_str = intToString(contact_count);
+    string closest_contact = m_map_closest_contact[speed_str];
+    string closest_cpa=  doubleToStringX(m_map_closest_CPA[speed_str]);
+    actab<<speed_str<<count_str<<closest_contact<<closest_cpa;
    }
   m_msgs << actab.getFormattedString();
   
