@@ -129,6 +129,11 @@ bool TrafficDensity::OnStartUp()
 {
   AppCastingMOOSApp::OnStartUp();
 
+  m_ownship = m_host_community;
+  if(m_ownship == "") {
+    cout << "Vehicle Name (MOOS community) not provided" << endl;
+    return(false);
+  }
   
   list<string> sParams;
   m_MissionReader.EnableVerbatimQuoting(false);
@@ -172,6 +177,10 @@ void TrafficDensity::RegisterVariables()
 void TrafficDensity::handleMailNodeReport(string report)
 {
   NodeRecord new_node_record = string2NodeRecord(report, true);
+  string vname = new_node_record.getName();
+  if (vname == m_ownship)
+    return;
+  
   m_density_counter.ProcessRecord (new_node_record);
 }
 
@@ -206,7 +215,8 @@ void TrafficDensity::SetOwnShip()
 //Procedure: buildReport()
 bool TrafficDensity::buildReport()
 {
-  m_msgs << "Speed choices" << endl;
+  m_msgs <<m_ownship<< "'s speed choices" << endl;
+  m_msgs <<"------------------------------------------"<< endl;
   ACTable actab(2,5);
   actab.setColumnJustify(1, "right");
   actab << "Speed | Peak Density";

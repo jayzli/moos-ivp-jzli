@@ -1,3 +1,4 @@
+
 /************************************************************/
 /*    NAME: John Li                                              */
 /*    ORGN: MIT                                             */
@@ -44,6 +45,8 @@ public:
   double m_step;  // Step is the temporal increment in seconds 
   double m_heading_range;// Range of angles to consider
   double m_speed_range;// Range of speeds to consider
+
+  string   m_ownship;
   
   //Goal is not a configuration variable for this app. 
  
