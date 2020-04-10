@@ -33,6 +33,8 @@ DensityCounter::DensityCounter()
   m_contact_heading=0;
   m_contact_speed=0;
 
+  double m_min_range = 10000; 
+
   m_step = .5;  //in seconds
   m_range = 50; //in meters
   
@@ -79,18 +81,18 @@ double DensityCounter::calRange()
   double step_limit = m_goal/m_own_speed/m_step;
   //Distance to goal divided by speed of own ship gives time to destination.
   //Time to distination divided by step size gives number of steps needed
-  double min_range = 10000; 
+  m_min_range=10000;
   for (int i=1; i<step_limit; i++) {
     IncrementStep(m_step);
     double dis_x = m_contact_x - m_own_x;
     double dis_y = m_contact_y - m_own_y;
     double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
-    if (range < min_range){
-       min_range = range;
+    if (range < m_min_range){
+      m_min_range = range;
     }
   }
 
-  return (min_range);
+  return (m_min_range);
  }
 
 //----------------------------------------------------------
@@ -107,21 +109,52 @@ void DensityCounter::IncrementStep (double m_step)
 //-------------------------------------------------------------
 // Process noderecord class
 
-void DensityCounter::ProcessRecord(NodeRecord m_record)
+void DensityCounter::ProcessRecord(NodeRecord m_record, bool contact)
 
 {
-  m_contact_x =  m_record.getX();
-  m_contact_y =  m_record.getY();
-  m_contact_heading =  m_record.getHeading();
-  m_contact_speed =  m_record.getSpeed();
-  m_contact_name = m_record.getName();
+  if (contact) {
+    m_contact_x =  m_record.getX();
+    m_contact_y =  m_record.getY();
+    m_contact_heading =  m_record.getHeading();
+    m_contact_speed =  m_record.getSpeed();
+    m_contact_name = m_record.getName();
+  }
+  else {
+    m_own_x =  m_record.getX();
+    m_own_y =  m_record.getY();
+    m_own_heading =  m_record.getHeading();
+    m_own_speed =  m_record.getSpeed();
+    //m_contact_name = m_record.getName();    m
+  }
 }
 
 //----------------------------------------------------------
 // Calculate distance to goal
 void DensityCounter::calculateGoal ()
  {
-     double dis_x = m_goal_x - m_own_x;
+    double dis_x = m_goal_x - m_own_x;
     double dis_y = m_goal_y - m_own_y;
     m_goal =  sqrt((dis_x*dis_x)+(dis_y*dis_y));
+}
+
+//-------------------------------------------------------------
+string DensityCounter::getReport()
+{
+  string x = doubleToStringX(m_own_x);
+  string y = doubleToStringX(m_own_y);
+  string hdg = doubleToStringX(m_own_heading);
+  string spd = doubleToStringX(m_own_speed);
+
+  string c_x = doubleToStringX(m_contact_x);
+  string c_y = doubleToStringX(m_contact_y);
+  string c_hdg = doubleToStringX(m_contact_heading);
+  string c_spd = doubleToStringX(m_contact_speed);
+
+  string range = doubleToStringX(m_min_range);
+
+  string report = "own ship x, y, hdg, spd: " + x +", " + y + ", " + hdg +"," + spd;
+  report += ", " + m_contact_name + "'s  x, y, hdg, spd: " + c_x +", " +c_y + ", " +c_hdg +"," +c_spd;
+  report += ", min range: " + range;
+
+  return(report);
 }

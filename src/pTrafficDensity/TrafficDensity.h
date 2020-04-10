@@ -64,6 +64,7 @@ public:
   map<string, int> m_map_contact_count;
   map<string, string> m_map_closest_contact;
   map<string, double> m_map_closest_CPA;
+  map<string, string> m_map_density_reports;
   
   string m_report;
 

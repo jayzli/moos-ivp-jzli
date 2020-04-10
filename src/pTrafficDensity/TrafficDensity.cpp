@@ -21,17 +21,19 @@ using namespace std;
 TrafficDensity::TrafficDensity()
 {
   // Configuration Variables
-  m_range = 10; //default to 10 meters
+  m_range = 100; //default to 10 meters
   m_step = .5;//defaults to .5 seconds
   m_heading_range  = 5;
   m_speed_range = 150;//15 knots max
 
-  m_nav_x   = 0;                                                                 
-  m_nav_y   = 0;                                                                 
-  m_nav_hdg = 0;                                                                 
-  m_nav_spd = 0;     
+  m_nav_x   = 10;                                                                 
+  m_nav_y   = 10;                                                                
+  m_nav_hdg = 180;                                                                 
+  m_nav_spd = 5;     
 
   m_report ="no vehicle in range";
+
+  m_ownship="nelson";
 
   //m_contact_count[0] = 0;
   
@@ -105,17 +107,20 @@ bool TrafficDensity::Iterate()
   //  ChangeHeading(i);
   for (int j=1; j<m_speed_range; j++){
       ChangeSpeed(j);
+      string speed_str = doubleToStringX(m_nav_spd);
       int counter=0;
       string vname="no vessel in range";
       double min_cpa=m_range;
+      
       // check to see if this particular contact will be in range 
       map<string, DensityCounter>::iterator q;
       for (q=m_map_density_counter.begin(); q!=m_map_density_counter.end(); q++){
         string     contact_name = q->first;
         DensityCounter density_counter  = q->second;
 
-	SetOwnShip(density_counter);
+	//SetOwnShip(density_counter);  //issue with this function
 	double cpa = density_counter.calRange();
+
 	if (cpa<m_range){
 	  counter++;
 	  }
@@ -123,13 +128,19 @@ bool TrafficDensity::Iterate()
 	  vname=contact_name;
 	  min_cpa=cpa;
 	  }
+	
+	//m_map_density_reports[speed_str]=density_counter.getReport();
+
+	m_report=density_counter.getReport();
+	//Notify("DENSITY_REPORT", m_report);
         }
 	//record result for this particulat speed
-       string speed_str = doubleToStringX(m_nav_spd);
+
        m_map_contact_count[speed_str]=counter;
        m_map_closest_contact[speed_str]=vname;
        m_map_closest_CPA[speed_str]=min_cpa;
-      
+
+
   }
 
   AppCastingMOOSApp::PostReport();
@@ -193,10 +204,15 @@ void TrafficDensity::handleMailNodeReport(string report)
 {
   NodeRecord new_node_record = string2NodeRecord(report, true);
   string vname = new_node_record.getName();
-  //ignore ownship
-  if (vname == m_ownship)
-    return;
-
+  if (vname == m_ownship){
+    DensityCounter new_density_counter;
+    new_density_counter.ProcessRecord (new_node_record, false);
+    new_density_counter.setGoalX(100);
+    new_density_counter.setGoalY(-75);
+    m_map_density_counter[vname]=new_density_counter;
+    
+  }
+    
   //check to see if it is a new contact
   bool newly_known_vehicle = false;
   if(m_map_density_counter.count(vname) == 0)
@@ -205,13 +221,13 @@ void TrafficDensity::handleMailNodeReport(string report)
   //if new contact,  process using density counter
   if (newly_known_vehicle) {
     DensityCounter new_density_counter;
-    new_density_counter.ProcessRecord (new_node_record);
+    new_density_counter.ProcessRecord (new_node_record, true);
     m_map_density_counter[vname]=new_density_counter;
   }
 
   //if existing contact, update information
   if (! newly_known_vehicle)
-    m_map_density_counter[vname].ProcessRecord(new_node_record);
+    m_map_density_counter[vname].ProcessRecord(new_node_record, true);
 }
 
 //---------------------------------------------------------
@@ -245,8 +261,14 @@ void TrafficDensity::SetOwnShip(DensityCounter density_counter)
 //Procedure: buildReport()
 bool TrafficDensity::buildReport()
 {
+  m_msgs <<"------------------------------------------"<< endl;
   m_msgs <<m_ownship<< "'s speed choices" << endl;
   m_msgs <<"------------------------------------------"<< endl;
+
+  m_msgs<<"latest report:"<<m_report<<endl;
+
+  #if 0
+    
   ACTable actab(4,5);
   actab.setColumnJustify(1, "right");
   actab << "Speed | Peak Density | Closest | min CPA";
@@ -262,6 +284,19 @@ bool TrafficDensity::buildReport()
     actab<<speed_str<<count_str<<closest_contact<<closest_cpa;
    }
   m_msgs << actab.getFormattedString();
-  
-  return(true);
+
+  #endif
+
+  #if 0
+   map<string, string>::iterator q;
+   for(q=m_map_density_reports.begin(); q!=m_map_density_reports.end(); q++) {
+      string speed_str = q->first;
+      string report = q->second;
+      m_msgs<<speed_str<<endl;
+      m_msgs<<report<<endl;
+   }
+
+   #endif
+   
+   return(true);
 }

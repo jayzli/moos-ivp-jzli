@@ -29,13 +29,16 @@ class DensityCounter
  public:
   bool InRange(double m_range);
   double calRange();
-  void ProcessRecord (NodeRecord m_record);
+  void ProcessRecord (NodeRecord m_record, bool contact);
   void IncrementStep (double m_step);
+  string getReport(); //report state variables
+  
   void setX(double v)                        {m_own_x=v;}
-   void setY(double v)                       {m_own_y=v;}
+   void setY(double v)
+  {m_own_y=v;}
    void setHeading(double v)          {m_own_heading=v;}
    void setSpeed(double v)             {m_own_speed=v;}
-  void setGoalX(double v)                        {m_goal_x=v;}
+   void setGoalX(double v)                        {m_goal_x=v;}
    void setGoalY(double v)                       {m_goal_y=v;}
   
 
@@ -52,6 +55,8 @@ class DensityCounter
   double m_contact_heading;
   double m_contact_speed;
   string m_contact_name;
+
+  double m_min_range;
 
   NodeRecord m_record;
   
