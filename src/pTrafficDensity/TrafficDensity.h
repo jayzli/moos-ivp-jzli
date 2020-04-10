@@ -37,7 +37,7 @@ public:
    void handleMailNodeReport(std::string);
   void ChangeHeading(double m_heading_range);//not exactly accurate
   void ChangeSpeed(double m_speed_range);//not exactly accurate
-  void SetOwnShip(DensityCounter density_counter);
+  void SetOwnShip(string  contact_name);
   
   protected:
   //Configuration Variables, those set in my_vehicle.moos  file

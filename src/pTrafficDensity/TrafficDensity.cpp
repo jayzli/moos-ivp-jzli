@@ -118,7 +118,7 @@ bool TrafficDensity::Iterate()
         string     contact_name = q->first;
         DensityCounter density_counter  = q->second;
 
-	SetOwnShip(density_counter);  
+	//SetOwnShip(contact_name);  wrong place to set ship name
         m_report=density_counter.getReport();
 	
 	double cpa = density_counter.calRange();
@@ -141,7 +141,6 @@ bool TrafficDensity::Iterate()
        m_map_contact_count[speed_str]=counter;
        m_map_closest_contact[speed_str]=vname;
        m_map_closest_CPA[speed_str]=min_cpa;
-
 
   }
 
@@ -230,6 +229,7 @@ void TrafficDensity::handleMailNodeReport(string report)
   if (newly_known_vehicle) {
     DensityCounter new_density_counter;
     new_density_counter.ProcessRecord (new_node_record, true);
+    SetOwnShip(vname);
     m_map_density_counter[vname]=new_density_counter;
   }
 
@@ -256,14 +256,14 @@ void TrafficDensity::ChangeSpeed(double m_speed_range)
 
 //---------------------------------------------------------
 //Procedure: setOwnShip()
-void TrafficDensity::SetOwnShip(DensityCounter density_counter)
+void TrafficDensity::SetOwnShip(string vname)
 {
-  density_counter.setX(m_nav_x);
-  density_counter.setY(m_nav_y);
-  density_counter.setHeading(m_nav_hdg);
-  density_counter.setSpeed(m_nav_spd);
-  density_counter.setGoalX(100);
-  density_counter.setGoalY(-75);
+  m_map_density_counter[vname].setX(m_nav_x);
+  m_map_density_counter[vname].setY(m_nav_y);
+  m_map_density_counter[vname].setHeading(m_nav_hdg);
+  m_map_density_counter[vname].setSpeed(m_nav_spd);
+  m_map_density_counter[vname].setGoalX(100);
+  m_map_density_counter[vname].setGoalY(-75);
 }
 
 //---------------------------------------------------------
