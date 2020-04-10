@@ -21,10 +21,10 @@ using namespace std;
 
 DensityCounter::DensityCounter()
 {
-  m_own_x = 0;     // meters
-  m_own_y =0;
-  m_own_heading=0;
-  m_own_speed=0;
+  m_own_x = 5;     // meters
+  m_own_y = 5;
+  m_own_heading=50;
+  m_own_speed=10;
   m_goal_x=0;
   m_goal_y=0;
 

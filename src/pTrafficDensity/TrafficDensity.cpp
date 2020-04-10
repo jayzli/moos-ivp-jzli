@@ -118,7 +118,9 @@ bool TrafficDensity::Iterate()
         string     contact_name = q->first;
         DensityCounter density_counter  = q->second;
 
-	//SetOwnShip(density_counter);  //issue with this function
+	SetOwnShip(density_counter);  
+        m_report=density_counter.getReport();
+	
 	double cpa = density_counter.calRange();
 
 	if (cpa<m_range){
@@ -131,7 +133,7 @@ bool TrafficDensity::Iterate()
 	
 	//m_map_density_reports[speed_str]=density_counter.getReport();
 
-	m_report=density_counter.getReport();
+	
 	//Notify("DENSITY_REPORT", m_report);
         }
 	//record result for this particulat speed
@@ -204,15 +206,21 @@ void TrafficDensity::handleMailNodeReport(string report)
 {
   NodeRecord new_node_record = string2NodeRecord(report, true);
   string vname = new_node_record.getName();
+
+  #if 0
   if (vname == m_ownship){
     DensityCounter new_density_counter;
     new_density_counter.ProcessRecord (new_node_record, false);
     new_density_counter.setGoalX(100);
     new_density_counter.setGoalY(-75);
-    m_map_density_counter[vname]=new_density_counter;
-    
+    m_map_density_counter[vname]=new_density_counter;   
   }
-    
+  #endif
+
+  if  (vname == m_ownship){
+    return;
+  }
+  
   //check to see if it is a new contact
   bool newly_known_vehicle = false;
   if(m_map_density_counter.count(vname) == 0)
@@ -229,9 +237,10 @@ void TrafficDensity::handleMailNodeReport(string report)
   if (! newly_known_vehicle)
     m_map_density_counter[vname].ProcessRecord(new_node_record, true);
 }
+      
 
 //---------------------------------------------------------
-//Procedure: handleMailNodeReport()
+//Procedure: ChangeHeading()
 void TrafficDensity::ChangeHeading(double m_heading_range)
 {
   m_nav_hdg = m_nav_hdg + m_heading_range;
@@ -239,14 +248,14 @@ void TrafficDensity::ChangeHeading(double m_heading_range)
 
 
 //---------------------------------------------------------
-//Procedure: handleMailNodeReport()
+//Procedure: ChangeSpeed()
 void TrafficDensity::ChangeSpeed(double m_speed_range)
 {
   m_nav_spd = m_speed_range/10;
 }
 
 //---------------------------------------------------------
-//Procedure: handleMailNodeReport()
+//Procedure: setOwnShip()
 void TrafficDensity::SetOwnShip(DensityCounter density_counter)
 {
   density_counter.setX(m_nav_x);
@@ -265,7 +274,14 @@ bool TrafficDensity::buildReport()
   m_msgs <<m_ownship<< "'s speed choices" << endl;
   m_msgs <<"------------------------------------------"<< endl;
 
-  m_msgs<<"latest report:"<<m_report<<endl;
+  string x = doubleToStringX(m_nav_x);
+  string y = doubleToStringX(m_nav_y);
+  string hdg = doubleToStringX(m_nav_hdg);
+  string spd = doubleToStringX(m_nav_spd);
+  string report  = x + "," +  y+ " , " + hdg +"," + spd;
+  m_msgs<<"From App, own ship x, y, hdg, spd: "<<report<<endl;
+  
+  m_msgs<<"From Class:"<<m_report<<endl;
 
   #if 0
     
