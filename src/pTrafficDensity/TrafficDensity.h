@@ -37,7 +37,6 @@ public:
    void handleMailNodeReport(std::string);
   void ChangeHeading(double m_heading_range);//not exactly accurate
   void ChangeSpeed(double m_speed_range);//not exactly accurate
-  void SetOwnShip(string  contact_name);
   
   protected:
   //Configuration Variables, those set in my_vehicle.moos  file
@@ -57,16 +56,10 @@ public:
   double m_nav_spd;
   double m_goal;  // Goal is the distance to destination
 
-  //DensityCounter m_density_counter;
-
-  map<string, DensityCounter> m_map_density_counter;
-
-  map<string, int> m_map_contact_count;
-  map<string, string> m_map_closest_contact;
-  map<string, double> m_map_closest_CPA;
-  map<string, string> m_map_density_reports;
+  DensityCounter m_density_counter;
   
   string m_report;
+  ACTable m_detailed_report;
 
  private: // Configuration variables
 

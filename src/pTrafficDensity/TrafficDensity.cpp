@@ -21,15 +21,13 @@ using namespace std;
 TrafficDensity::TrafficDensity()
 {
   // Configuration Variables
-  m_range = 100; //default to 10 meters
+  m_range = 50; //default to 100 meters
   m_step = .5;//defaults to .5 seconds
-  m_heading_range  = 5;
-  m_speed_range = 150;//15 knots max
 
-  m_nav_x   = 10;                                                                 
-  m_nav_y   = 10;                                                                
-  m_nav_hdg = 180;                                                                 
-  m_nav_spd = 5;     
+  m_nav_x   = 0;                                                                 
+  m_nav_y   = 0;                                                                
+  m_nav_hdg = 0;                                                                 
+  m_nav_spd = 0;     
 
   m_report ="no vehicle in range";
 
@@ -102,47 +100,14 @@ bool TrafficDensity::Iterate()
 {
   AppCastingMOOSApp::Iterate();
 
-  //trial code only considers increasing speed and heading
-  //for (int i=1; i< m_heading_range; i++){
-  //  ChangeHeading(i);
-  for (int j=1; j<m_speed_range; j++){
-      ChangeSpeed(j);
-      string speed_str = doubleToStringX(m_nav_spd);
-      int counter=0;
-      string vname="no vessel in range";
-      double min_cpa=m_range;
-      
-      // check to see if this particular contact will be in range 
-      map<string, DensityCounter>::iterator q;
-      for (q=m_map_density_counter.begin(); q!=m_map_density_counter.end(); q++){
-        string     contact_name = q->first;
-        DensityCounter density_counter  = q->second;
+  m_density_counter.setOwnship(m_nav_x, m_nav_y, m_nav_hdg, m_nav_spd);
+  m_density_counter.setRange(m_range);
+  m_density_counter.setStep(m_step);
 
-	//SetOwnShip(contact_name);  wrong place to set ship name
-        m_report=density_counter.getReport();
-	
-	double cpa = density_counter.calRange();
+  m_density_counter.setGoal(100, -75);//temporary place holder
 
-	if (cpa<m_range){
-	  counter++;
-	  }
-	if (cpa<min_cpa){
-	  vname=contact_name;
-	  min_cpa=cpa;
-	  }
-	
-	//m_map_density_reports[speed_str]=density_counter.getReport();
-
-	
-	//Notify("DENSITY_REPORT", m_report);
-        }
-	//record result for this particulat speed
-
-       m_map_contact_count[speed_str]=counter;
-       m_map_closest_contact[speed_str]=vname;
-       m_map_closest_CPA[speed_str]=min_cpa;
-
-  }
+  m_report = m_density_counter.getReport();
+  m_detailed_report = m_density_counter.getDetailedReport();
 
   AppCastingMOOSApp::PostReport();
   return(true);
@@ -172,10 +137,10 @@ bool TrafficDensity::OnStartUp()
       string value = stripBlankEnds(*p);
       
       if(param == "step_size") {
-        m_range = atof(value.c_str());
+        m_step = atof(value.c_str());
       }
       else if(param == "range_limit") {
-        m_step = atof(value.c_str());
+        m_range = atof(value.c_str());
       }
     }
   }
@@ -206,25 +171,21 @@ void TrafficDensity::handleMailNodeReport(string report)
   NodeRecord new_node_record = string2NodeRecord(report, true);
   string vname = new_node_record.getName();
 
-  #if 0
-  if (vname == m_ownship){
-    DensityCounter new_density_counter;
-    new_density_counter.ProcessRecord (new_node_record, false);
-    new_density_counter.setGoalX(100);
-    new_density_counter.setGoalY(-75);
-    m_map_density_counter[vname]=new_density_counter;   
-  }
-  #endif
-
+  //if ownship, ignore
   if  (vname == m_ownship){
     return;
   }
-  
+
+  //else we process new node record with AddContact function from
+  //DensityCounter class.
+  m_density_counter.AddContact(new_node_record);
+
+  //These are probably not needed
+  #if 0
   //check to see if it is a new contact
   bool newly_known_vehicle = false;
   if(m_map_density_counter.count(vname) == 0)
     newly_known_vehicle = true; 
-  
   //if new contact,  process using density counter
   if (newly_known_vehicle) {
     DensityCounter new_density_counter;
@@ -232,45 +193,22 @@ void TrafficDensity::handleMailNodeReport(string report)
     SetOwnShip(vname);
     m_map_density_counter[vname]=new_density_counter;
   }
-
   //if existing contact, update information
   if (! newly_known_vehicle)
     m_map_density_counter[vname].ProcessRecord(new_node_record, true);
+  #endif
+  
+  return;
 }
-      
-
-//---------------------------------------------------------
-//Procedure: ChangeHeading()
-void TrafficDensity::ChangeHeading(double m_heading_range)
-{
-  m_nav_hdg = m_nav_hdg + m_heading_range;
-}
-
-
-//---------------------------------------------------------
-//Procedure: ChangeSpeed()
-void TrafficDensity::ChangeSpeed(double m_speed_range)
-{
-  m_nav_spd = m_speed_range/10;
-}
-
-//---------------------------------------------------------
-//Procedure: setOwnShip()
-void TrafficDensity::SetOwnShip(string vname)
-{
-  m_map_density_counter[vname].setX(m_nav_x);
-  m_map_density_counter[vname].setY(m_nav_y);
-  m_map_density_counter[vname].setHeading(m_nav_hdg);
-  m_map_density_counter[vname].setSpeed(m_nav_spd);
-  m_map_density_counter[vname].setGoalX(100);
-  m_map_density_counter[vname].setGoalY(-75);
-}
+     
 
 //---------------------------------------------------------
 //Procedure: buildReport()
 bool TrafficDensity::buildReport()
 {
   m_msgs <<"------------------------------------------"<< endl;
+  m_msgs <<"Range limit set to" << doubleToStringX(m_range) << "meters"<<endl;
+  m_msgs <<"Step Size is" << doubleToStringX(m_step) << "seconds"<<endl;
   m_msgs <<m_ownship<< "'s speed choices" << endl;
   m_msgs <<"------------------------------------------"<< endl;
 
@@ -282,6 +220,8 @@ bool TrafficDensity::buildReport()
   m_msgs<<"From App, own ship x, y, hdg, spd: "<<report<<endl;
   
   m_msgs<<"From Class:"<<m_report<<endl;
+
+  m_msg<< m_detailed_report.getFormattedString();
 
   #if 0
     

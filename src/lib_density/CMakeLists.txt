@@ -16,5 +16,6 @@ ADD_LIBRARY(density ${SRC})
 
 TARGET_LINK_LIBRARIES( density
    mbutil
-   )
+   apputil
+)
 
