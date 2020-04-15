@@ -95,8 +95,11 @@ void DensityCounter::calCount()
 	  double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
  	  if (range < min_range){
 	    min_range = range;
-	    closest = vname; 
 	   }
+	  if (range < min_cpa){
+	    min_cpa = range;
+	    closest = vname;
+	  }
         }//min_range is now the small range between contact and ownship 
 
        if (min_range<m_range){
@@ -105,7 +108,7 @@ void DensityCounter::calCount()
       }
       
      m_map_density_count[speed_str]=counter;
-     m_map_min_range[speed_str] = min_range;
+     m_map_min_range[speed_str] = min_cpa;
      m_map_closest_contact[speed_str] = closest;
    }
  
