@@ -23,6 +23,7 @@ TrafficDensity::TrafficDensity()
   // Configuration Variables
   m_range = 50; //default to 100 meters
   m_step = .5;//defaults to .5 seconds
+  m_max_speed = 15//defaults to 15 knots
 
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                
@@ -32,6 +33,8 @@ TrafficDensity::TrafficDensity()
   m_report ="no vehicle in range";
 
   m_ownship="nelson";
+
+  m_count = 0;
 
   //m_contact_count[0] = 0;
   
@@ -103,11 +106,15 @@ bool TrafficDensity::Iterate()
   m_density_counter.setOwnship(m_nav_x, m_nav_y, m_nav_hdg, m_nav_spd);
   m_density_counter.setRange(m_range);
   m_density_counter.setStep(m_step);
+  m_density_counter.setMaxSpeed(m_max_speed);
 
   m_density_counter.setGoal(100, -75);//temporary place holder
 
+  m_count=m_density_counter.returnCount(m_range, m_step);
+
   m_report = m_density_counter.getReport();
   m_detailed_report = m_density_counter.getDetailedReport();
+  m_contact_report = m_density_counter.getContacts();
 
   AppCastingMOOSApp::PostReport();
   return(true);
@@ -142,13 +149,15 @@ bool TrafficDensity::OnStartUp()
       else if(param == "range_limit") {
         m_range = atof(value.c_str());
       }
+      else if(param == "max_speed"){
+	m_max_speed = atof(value.c_str());
+      }
     }
   }
   
   RegisterVariables();	
   return(true);
 }
-
 
 //---------------------------------------------------------
 // Procedure: RegisterVariables
@@ -179,6 +188,7 @@ void TrafficDensity::handleMailNodeReport(string report)
   //else we process new node record with AddContact function from
   //DensityCounter class.
   m_density_counter.AddContact(new_node_record);
+  return;
 
   //These are probably not needed
   #if 0
@@ -198,7 +208,6 @@ void TrafficDensity::handleMailNodeReport(string report)
     m_map_density_counter[vname].ProcessRecord(new_node_record, true);
   #endif
   
-  return;
 }
      
 
@@ -219,8 +228,13 @@ bool TrafficDensity::buildReport()
   string report  = x + "," +  y+ " , " + hdg +"," + spd;
   m_msgs<<"From App, own ship x, y, hdg, spd: "<<report<<endl;
   
+  m_msgs <<"------------------------------------------"<< endl;
   m_msgs<<"From Class:"<<m_report<<endl;
-
+  
+  m_msgs <<"------------------------------------------"<< endl;
+  m_msg<<  m_contact_report.getFormattedString();
+  
+  m_msgs <<"------------------------------------------"<< endl;
   m_msg<< m_detailed_report.getFormattedString();
 
   #if 0

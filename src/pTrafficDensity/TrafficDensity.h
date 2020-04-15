@@ -43,7 +43,7 @@ public:
   double m_range;  // Range is the distance limit for density calculation 
   double m_step;  // Step is the temporal increment in seconds 
   double m_heading_range;// Range of angles to consider
-  double m_speed_range;// Range of speeds to consider
+  double m_max_speed;// Range of speeds to consider
 
   string   m_ownship;
   
@@ -57,9 +57,12 @@ public:
   double m_goal;  // Goal is the distance to destination
 
   DensityCounter m_density_counter;
+
+  int m_count;
   
   string m_report;
   ACTable m_detailed_report;
+  ACTable m_contact_report;
 
  private: // Configuration variables
 
