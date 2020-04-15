@@ -224,7 +224,7 @@ string DensityCounter::getReport()
 
   string report = "own ship x, y, hdg, spd: " + x +", " + y + ", " + hdg +"," + spd;
   //report += ", " + m_contact_name + "'s  x, y, hdg, spd: " + c_x +", " +c_y + ", " +c_hdg +"," +c_spd;
-  report += "range limit: " + range;
+  report += " range limit: " + range;
 
   return(report);
 }
@@ -269,7 +269,7 @@ ACTable DensityCounter::getContacts()
     string y_str = doubleToStringX(m_map_contact_y[vname]);
     string hdg_str=  doubleToStringX(m_map_contact_heading[vname]);
     string spd_str=  doubleToStringX(m_map_contact_speed[vname]);
-    actab<<vname << x_str << y_str << hdg_str;
+    actab<<vname << x_str << y_str << hdg_str <<spd_str;
    }
 
   return(actab);

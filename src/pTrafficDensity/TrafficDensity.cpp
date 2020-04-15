@@ -110,7 +110,7 @@ bool TrafficDensity::Iterate()
 
   m_density_counter.setGoal(100, -75);//temporary place holder
 
-  m_density_counter.calCount();
+  //m_density_counter.calCount();
 
   m_report = m_density_counter.getReport();
   m_detailed_report = m_density_counter.getDetailedReport();
@@ -216,8 +216,8 @@ void TrafficDensity::handleMailNodeReport(string report)
 bool TrafficDensity::buildReport()
 {
   m_msgs <<"------------------------------------------"<< endl;
-  m_msgs <<"Range limit set to" << doubleToStringX(m_range) << "meters"<<endl;
-  m_msgs <<"Step Size is" << doubleToStringX(m_step) << "seconds"<<endl;
+  m_msgs <<"Range limit set to " << doubleToStringX(m_range) << " meters"<<endl;
+  m_msgs <<"Step Size is " << doubleToStringX(m_step) << " seconds"<<endl;
   m_msgs <<m_ownship<< "'s speed choices" << endl;
   m_msgs <<"------------------------------------------"<< endl;
 
@@ -229,11 +229,11 @@ bool TrafficDensity::buildReport()
   m_msgs<<"From App, own ship x, y, hdg, spd: "<<report<<endl;
   
   m_msgs <<"------------------------------------------"<< endl;
-  m_msgs<<"From Class:"<<m_report<<endl;
+  m_msgs<<"From Class: "<<m_report<<endl;
   
   m_msgs <<"------------------------------------------"<< endl;
   m_msgs<<  m_contact_report.getFormattedString();
-  
+  m_msgs <<endl;
   m_msgs <<"------------------------------------------"<< endl;
   m_msgs<< m_detailed_report.getFormattedString();
 
