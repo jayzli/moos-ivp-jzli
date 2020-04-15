@@ -23,7 +23,7 @@ TrafficDensity::TrafficDensity()
   // Configuration Variables
   m_range = 50; //default to 100 meters
   m_step = .5;//defaults to .5 seconds
-  m_max_speed = 15//defaults to 15 knots
+  m_max_speed = 15;//defaults to 15 knots
 
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                
@@ -110,7 +110,7 @@ bool TrafficDensity::Iterate()
 
   m_density_counter.setGoal(100, -75);//temporary place holder
 
-  m_count=m_density_counter.returnCount(m_range, m_step);
+  m_density_counter.calCount();
 
   m_report = m_density_counter.getReport();
   m_detailed_report = m_density_counter.getDetailedReport();
@@ -232,10 +232,10 @@ bool TrafficDensity::buildReport()
   m_msgs<<"From Class:"<<m_report<<endl;
   
   m_msgs <<"------------------------------------------"<< endl;
-  m_msg<<  m_contact_report.getFormattedString();
+  m_msgs<<  m_contact_report.getFormattedString();
   
   m_msgs <<"------------------------------------------"<< endl;
-  m_msg<< m_detailed_report.getFormattedString();
+  m_msgs<< m_detailed_report.getFormattedString();
 
   #if 0
     

@@ -261,7 +261,7 @@ ACTable DensityCounter::getContacts()
   actab << "Vname | Contact X | Contact Y | Heading | Speed";
   actab.addHeaderLines();
 
-  map<string, int>::iterator p;
+  map<string, double>::iterator p;
   for(p=m_map_contact_x.begin(); p!=m_map_contact_x.end(); p++) {
     string vname = p->first;
     double contact_x = p->second;
