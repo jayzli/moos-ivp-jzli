@@ -24,7 +24,7 @@ Processconfig = ANTLER
   Run = uFldNodeBroker   @ NewConsole = false
   Run = uFldMessageHandler  @ NewConsole = false
   Run = pBasicContactMgr @ NewConsole = false
-  Run = pTrafficDensity  @ NewConsole = new
+//  Run = pTrafficDensity  @ NewConsole = new
 }
 
 //------------------------------------------------------------

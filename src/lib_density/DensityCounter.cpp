@@ -54,12 +54,13 @@ void DensityCounter::calCount()
   //m_range = range;
   //m_step = step;
   
-  for (int j=1; j<=m_max_speed*10.01; j++){
+  for (double j=1; j<=m_max_speed*10.01; j++){
       double sim_speed = j/10; //simulated speed go from .1 to max speed 
       string speed_str = doubleToStringX(sim_speed);
       int counter=0;
       double min_cpa=m_range;
       string closest = "no vessel in range";
+      cout<<"speed is "<<speed_str<<endl<<flush;
       // calculate range and heading to goal
       calculateGoal();
 
@@ -82,7 +83,8 @@ void DensityCounter::calCount()
 	double step_limit = m_goal_range/sim_speed/m_step;
 
         double min_range = m_range;
-						  
+	cout<<"considering contact "<<vname<<endl<<flush;
+	double pre_range = 0;
 	for (int i=1; i<step_limit; i++) {
 	  //IncrementStep(m_step);
           contact_x = contact_x + m_step * contact_spd * cos(contact_angle*MPI/180);
@@ -93,6 +95,14 @@ void DensityCounter::calCount()
 	  double dis_x = contact_x - own_x;
 	  double dis_y = contact_y - own_y;
 	  double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
+
+	  //once range start opening, stop simulating forward
+	  if (range < pre_range){
+	    break;
+	  }
+	  else{
+	    pre_range = range;
+	  }
  	  if (range < min_range){
 	    min_range = range;
 	   }
@@ -100,12 +110,16 @@ void DensityCounter::calCount()
 	    min_cpa = range;
 	    closest = vname;
 	  }
+	  
+	  cout<<"range is "<<range<<endl<<flush;
         }//min_range is now the small range between contact and ownship 
 
        if (min_range<m_range){
 	  counter++;
         }      
       }
+
+      cout<<"min_range is" <<min_cpa<<endl<<flush;
       
      m_map_density_count[speed_str]=counter;
      m_map_min_range[speed_str] = min_cpa;
@@ -175,6 +189,7 @@ void DensityCounter::AddContact(NodeRecord m_record)
     m_map_contact_heading[vname] =  m_record.getHeading();
     m_map_contact_speed[vname] =  m_record.getSpeed();
     //m_contact_name = m_record.getName();
+    // cout<<"added contact"<<vname<<flush;
 }
 
 //----------------------------------------------------------
@@ -185,12 +200,19 @@ void DensityCounter::calculateGoal ()
     double dis_y = m_goal_y - m_own_y;
     m_goal_range =  sqrt((dis_x*dis_x)+(dis_y*dis_y));
     m_goal_heading = atan2 (dis_y, dis_x) ;//radians
+    cout<<"goal range calculated"<<endl<<flush;
 }
 
 //---------------------------------------------------------
  double DensityCounter::HeadingToAngle(double heading)
  {
-   double angle =  90 - heading; 
+   double angle;
+   if (heading <=90){
+     angle =  90 - heading;
+     }
+   if (heading > 90){
+     angle = 450 - heading;
+     }
    return(angle);
  }
 //---------------------------------------------------------
@@ -202,6 +224,7 @@ void DensityCounter::setOwnship(double x, double y, double hdg, double spd)
   setY(y);
   setHeading(hdg);
   setSpeed(spd);
+  cout<<"ownship set"<<endl<<flush;
 }
 //---------------------------------------------------------
 //Procedure: setGoal()
@@ -210,6 +233,7 @@ void DensityCounter::setGoal(double goal_x, double goal_y)
 {
   setGoalX(goal_x);
   setGoalY(goal_y);
+  cout<<"goal set"<< endl<<flush; 
 }
 
 //-------------------------------------------------------------
