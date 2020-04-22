@@ -21,7 +21,7 @@ using namespace std;
 TrafficDensity::TrafficDensity()
 {
   // Configuration Variables
-  m_range = 50; //default to 100 meters
+  m_range = 95; //default to 100 meters
   m_step = .5;//defaults to .5 seconds
   m_max_speed = 15;//defaults to 15 knots
 

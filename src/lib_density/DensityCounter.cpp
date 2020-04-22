@@ -66,7 +66,7 @@ void DensityCounter::calCount()
 
       // loop through contacts will be in range
       map<string, double>::iterator q;
-      for (q=m_map_contact_x.begin(); q!=m_map_contact_y.end(); q++){
+      for (q=m_map_contact_x.begin(); q!=m_map_contact_x.end(); q++){
         string     vname = q->first;
         double  contact_x = q->second;
         double  contact_y = m_map_contact_y[vname];

@@ -23,8 +23,6 @@ Processconfig = ANTLER
   Run = pHostInfo        @ NewConsole = false
   Run = uFldNodeBroker   @ NewConsole = false
   Run = uFldMessageHandler  @ NewConsole = false
-  Run = pBasicContactMgr @ NewConsole = false
-  Run = pTrafficDensity  @ NewConsole = new
 }
 
 //------------------------------------------------------------
@@ -38,16 +36,6 @@ ProcessConfig = uFldMessageHandler
   strict_addressing = false
 }
 
-//-----------------------------------------------------------
-// pTrafficDensity configuration block
-
-ProcessConfig = pTrafficDensity
-{
-  AppTick    = 2
-  CommsTick  = 2
-  step_size  = 1
-  range_limit = 100
-}
 
 #include plug_uFldNodeBroker.moos
 #include plug_pShare.moos
@@ -58,4 +46,4 @@ ProcessConfig = pTrafficDensity
 #include plug_pLogger.moos
 #include plug_pNodeReporter.moos
 #include plug_uProcessWatch.moos
-#include plug_pBasicContactMgr.moos
+
