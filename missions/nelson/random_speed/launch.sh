@@ -21,6 +21,12 @@ for ARGI; do
         TIME_WARP=$ARGI
     elif [ "${ARGI}" = "--just_build" -o "${ARGI}" = "-j" ] ; then
 	JUST_MAKE="yes"
+    elif [ "${ARGI:0:6}" = "--amt=" ] ; then                      
+        AMT="${ARGI#--amt=*}"                                     
+        if [ ! $AMT -ge 1 ] ; then                                
+            echo "launch.sh: Vehicle amount must be >= 1."        
+            exit 1                                                
+        fi
     else 
 	printf "Bad Argument: %s \n" $ARGI
 	exit 0
@@ -32,18 +38,19 @@ done
 
 #-------------------------------------------------------------
 if [ "${RANDSTART}" = "true" ] ; then
-    pickpos --poly="60,10:80,10:80,-10:60,-10"      \
-            --poly="90,10:110,10:110,-10:90,-10"  \
-            --poly="60,-140:80,-140:80,-160:60,-160"  \
-	    --poly="90,-140:110,-140:110,-169:90,-160"\
+    pickpos --poly="60,10:80,10:80,-10:60,-10" \
+            --poly="90,10:110,10:110,-10:90,-10" \
+            --poly="60,-140:80,-140:80,-160:60,-160" \
+	    --poly="90,-140:110,-140:110,-160:90,-160" \
+	    --buffer=20 \
 	    --amt=$AMT  > vpositions.txt  
 
     pickpos --amt=$AMT --spd=1:5 > vspeeds.txt
-    
 fi
 
 VEHPOS=(`cat vpositions.txt`)
 SPEEDS=(`cat vspeeds.txt`)
+
 #-------------------------------------------------------
 #  Part 3: Create the .moos and .bhv files. 
 #-------------------------------------------------------
@@ -54,17 +61,27 @@ VNAME4="charlie"        # The fourth vehicle Community
 VNAME5="delta"          # The fifth vehicle Community
 
 START_POS1="-20,-75"      # Start in the middle
-START_POS2="70,0"
+
+
+#START_POS2="70,0"
 START_POS3="95,0"
 START_POS4="70,-150"
 START_POS5="95,-150"
 
+
+START_POS2=${VEHPOS[0]}
+#START_POS3=${VEHPOS[1]}
+#START_POS4=${VEHPOS[2]}
+#START_POS5=${VEHPOS[3]}
+
 START_HEADING1="90"
-START_HEADING2="180"
-START_HEADING3="180"
+
+START_HEADING2=$(expr 180 + $((RANDOM % 20 - 10)))
+START_HEADING3=$(expr 180 + $((RANDOM % 20 - 10)))
 START_HEADING4="0"
 START_HEADING5="0"
 
+START2 ="${START_POS2}, heading=${START_HEADING2}"
 LOITER_POS1="180,-75"
 LOITER_POS2="70,-150"
 LOITER_POS3="95,-150"
@@ -72,10 +89,10 @@ LOITER_POS4="70,0"
 LOITER_POS5="95,0"
 
 TRANSIT_SPEED1="1.5"
-TRANSIT_SPEED2=${SPEEDS['1']}
-TRANSIT_SPEED3=${SPEEDS['2']}
-TRANSIT_SPEED4=${SPEEDS['3']}
-TRANSIT_SPEED5=${SPEEDS['4']}
+TRANSIT_SPEED2=${SPEEDS[0]}
+TRANSIT_SPEED3=${SPEEDS[1]}
+TRANSIT_SPEED4=${SPEEDS[2]}
+TRANSIT_SPEED5=${SPEEDS[3]}
 
 SHORE_LISTEN="9300"
 
@@ -88,7 +105,7 @@ nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
 nsplug meta_vehicle.moos targ_$VNAME2.moos -f WARP=$TIME_WARP \
     VNAME=$VNAME2          SHARE_LISTEN="9302"              \
     VPORT="9002"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START_POS2  START_HEADING=$START_HEADING2
+    START_POS=$START2
 
 nsplug meta_vehicle.moos targ_$VNAME3.moos -f WARP=$TIME_WARP \
     VNAME=$VNAME3          SHARE_LISTEN="9303"              \
@@ -114,7 +131,7 @@ nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
     TRANSIT_SPEED=$TRANSIT_SPEED1
 
 nsplug meta_vehicle.bhv targ_$VNAME2.bhv -f VNAME=$VNAME2   \
-    START_POS=$START_POS2 LOITER_POS=$LOITER_POS2           \
+    START_POS=$START2 LOITER_POS=$LOITER_POS2           \
     TRANSIT_SPEED=$TRANSIT_SPEED2
 
 nsplug meta_vehicle.bhv targ_$VNAME3.bhv -f VNAME=$VNAME3   \
