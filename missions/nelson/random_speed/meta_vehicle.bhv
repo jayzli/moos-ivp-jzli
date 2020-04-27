@@ -37,10 +37,10 @@ Behavior = BHV_Waypoint
   endflag   = RETURN = true
   endflag   = LOITER = false					
 
-   speed = $(TRANSIT_SPEED)
+    speed = $(TRANSIT_SPEED)
    radius = 3.0
-   nm_radius = 15.0
-   points = $(LOITER_POS)
+nm_radius = 15.0
+    point = $(LOITER_POS)
    repeat = 10
    lead = 8
 }
@@ -59,7 +59,7 @@ Behavior = BHV_Waypoint
       speed = 1.3
      radius = 3.0
   nm_radius = 15.0
-     points = $(START_POS)
+      point = $(START_POS)
      repeat = 10
        lead = 8
 }

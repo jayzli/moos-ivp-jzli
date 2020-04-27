@@ -42,7 +42,7 @@ nsplug meta_shoreside.moos targ_shoreside.moos -f WARP=$TIME_WARP \
     SPORT="9000"
 
 if [ ${JUST_MAKE} = "no" ] ; then
-    printf "Launching $SNAME MOOS Community (WARP=%s) \n"  $TIME_WARP
+    printf "Launching shoreside MOOS Community (WARP=%s) \n"  $TIME_WARP
     pAntler targ_shoreside.moos >& /dev/null &
 fi
 
@@ -65,13 +65,14 @@ TRANSIT_SPEED1=$((RANDOM % 5 + 1))
 LOITER_POS1="180,-75"
 
 nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
-    START_POS=$START_POS1 LOITER_POS=$LOITER_POS1           \
+    START_POS=$START1 LOITER_POS=$LOITER_POS1           \
     TRANSIT_SPEED=$TRANSIT_SPEED1
 
 if [ ${JUST_MAKE} = "no" ] ; then
     printf "Launching $VNAME1 MOOS Community (WARP=%s) \n" $TIME_WARP
     pAntler targ_$VNAME1.moos >& /dev/null &
 fi
+
 #-------------------------------------------------------
 #  Part 4: Create the .moos and .bhv files for other vehicles
 #  Launch rest of the vehicles
@@ -81,16 +82,22 @@ pickpos --amt=$AMT --vnames  > vnames.txt
 pickpos --amt=$AMT --spd=1:5 > vspeeds.txt
 SPEEDS=(`cat vspeeds.txt`)                                              
 VNAMES=(`cat vnames.txt`)                                               
-POLYS=(`cat vpolygons.txt`)                           
+STARTPOLY=(`cat startpolygons.txt`)  #start polygons are set by user in txt file
+STARTNUM=`wc -l <startpolygons.txt` #number of starting polygons
+LOITERPOLY=(`cat loiterpolygons.txt`)  #loiter polygons are set by user in txt file
+LOITERNUM=`wc -l <loiterpolygons.txt` #number of loiter polygons
+sleep 1
 
 for INDEX in `seq 1 $AMT`;
 do
     sleep 0.5
     ARRAY_INDEX=`expr $INDEX - 1` # array start at 0
     PORT_INDEX=`expr $INDEX + 1` # for example, the first contact need to take port 2
+    START_INDEX=`expr $ARRAY_INDEX % $STARTNUM`
+    LOITER_INDEX=`expr $ARRAY_INDEX % $LOITERNUM`
 
-    START=(
-    LOITER_POS=(
+    START=`pickpos --poly="${STARTPOLY[START_INDEX]}" --amt=1`
+    LOITER_POS=`pickpos --poly="${LOITERPOLY[LOITER_INDEX]}" --amt=1`
     
     VNAME=${VNAMES[$ARRAY_INDEX]}                                       
     SPEED=${SPEEDS[$ARRAY_INDEX]}
@@ -106,7 +113,6 @@ do
 	   TRANSIT_SPEED=$SPEED
     printf "Launching $VNAME MOOS Community (WARP=%s) \n" $TIME_WARP
     pAntler targ_$VNAME.moos >& /dev/null &
-
 done
 
 printf "Done \n"
