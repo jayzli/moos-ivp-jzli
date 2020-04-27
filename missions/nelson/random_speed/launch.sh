@@ -2,14 +2,13 @@
 #-----------------------------------------------------
 # script : launch_vehicle.sh
 # Author: John Li
-# Date: Apr 2020
-# Desrciption: Launch randomly chosen pos
+# Date: April 2020
+# Desrciption: Launch a specified number of vehicles from four random polygons
 #-------------------------------------------------------
 #  Part 1: Check for and handle command-line arguments
 #-------------------------------------------------------
 TIME_WARP=1
 JUST_MAKE="no"
-RANDSTART="true"
 AMT=4
 for ARGI; do
     if [ "${ARGI}" = "--help" -o "${ARGI}" = "-h" ] ; then
@@ -23,8 +22,8 @@ for ARGI; do
 	JUST_MAKE="yes"
     elif [ "${ARGI:0:6}" = "--amt=" ] ; then                      
         AMT="${ARGI#--amt=*}"                                     
-        if [ ! $AMT -ge 1 ] ; then                                
-            echo "launch.sh: Vehicle amount must be >= 1."        
+        if [ ! $AMT -ge 4 ] ; then                                
+            echo "launch.sh: Vehicle amount must be >= 4."        
             exit 1                                                
         fi
     else 
@@ -34,142 +33,88 @@ for ARGI; do
 done
 
 #-------------------------------------------------------------
-# Part 3: Generate random starting positions, speeds and vnames
-
+# Part 2: Generate Shore files and launch shoreside
 #-------------------------------------------------------------
-if [ "${RANDSTART}" = "true" ] ; then
-    pickpos --poly="60,10:80,10:80,-10:60,-10" \
-            --poly="90,10:110,10:110,-10:90,-10" \
-            --poly="60,-140:80,-140:80,-160:60,-160" \
-	    --poly="90,-140:110,-140:110,-160:90,-160" \
-	    --buffer=20 \
-	    --amt=$AMT  > vpositions.txt  
-
-    pickpos --amt=$AMT --spd=1:5 > vspeeds.txt
-fi
-
-VEHPOS=(`cat vpositions.txt`)
-SPEEDS=(`cat vspeeds.txt`)
-
-#-------------------------------------------------------
-#  Part 3: Create the .moos and .bhv files. 
-#-------------------------------------------------------
-VNAME1="nelson"         # The testing vehicle Community
-VNAME2="alpha"          # The second vehicle Community
-VNAME3="bravo"          # The third vehicle Community
-VNAME4="charlie"        # The fourth vehicle Community
-VNAME5="delta"          # The fifth vehicle Community
-
-START_POS1="-20,-75"      # Start in the middle
-
-
-#START_POS2="70,0"
-START_POS3="95,0"
-START_POS4="70,-150"
-START_POS5="95,-150"
-
-
-START_POS2=${VEHPOS[0]}
-#START_POS3=${VEHPOS[1]}
-#START_POS4=${VEHPOS[2]}
-#START_POS5=${VEHPOS[3]}
-
-START_HEADING1="90"
-
-START_HEADING2=$(expr 180 + $((RANDOM % 20 - 10)))
-START_HEADING3=$(expr 180 + $((RANDOM % 20 - 10)))
-START_HEADING4="0"
-START_HEADING5="0"
-
-START2 ="${START_POS2}, heading=${START_HEADING2}"
-LOITER_POS1="180,-75"
-LOITER_POS2="70,-150"
-LOITER_POS3="95,-150"
-LOITER_POS4="70,0"
-LOITER_POS5="95,0"
-
-TRANSIT_SPEED1="1.5"
-TRANSIT_SPEED2=${SPEEDS[0]}
-TRANSIT_SPEED3=${SPEEDS[1]}
-TRANSIT_SPEED4=${SPEEDS[2]}
-TRANSIT_SPEED5=${SPEEDS[3]}
-
 SHORE_LISTEN="9300"
 
-#The testing vehicle's metafiles are called my_vehicle.moos/bhv
-nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
-    VNAME=$VNAME1          SHARE_LISTEN="9301"              \
-    VPORT="9001"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START_POS1  START_HEADING=$START_HEADING1
-
-nsplug meta_vehicle.moos targ_$VNAME2.moos -f WARP=$TIME_WARP \
-    VNAME=$VNAME2          SHARE_LISTEN="9302"              \
-    VPORT="9002"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START2
-
-nsplug meta_vehicle.moos targ_$VNAME3.moos -f WARP=$TIME_WARP \
-    VNAME=$VNAME3          SHARE_LISTEN="9303"              \
-    VPORT="9003"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START_POS3  START_HEADING=$START_HEADING3
-    
-nsplug meta_vehicle.moos targ_$VNAME4.moos -f WARP=$TIME_WARP \
-    VNAME=$VNAME4          SHARE_LISTEN="9304"              \
-    VPORT="9004"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START_POS4  START_HEADING=$START_HEADING4
-
-nsplug meta_vehicle.moos targ_$VNAME5.moos -f WARP=$TIME_WARP \
-    VNAME=$VNAME5          SHARE_LISTEN="9305"              \
-    VPORT="9005"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START_POS5  START_HEADING=$START_HEADING5
-    
 nsplug meta_shoreside.moos targ_shoreside.moos -f WARP=$TIME_WARP \
     SNAME="shoreside"  SHARE_LISTEN=$SHORE_LISTEN                 \
     SPORT="9000"
+
+if [ ${JUST_MAKE} = "no" ] ; then
+    printf "Launching $SNAME MOOS Community (WARP=%s) \n"  $TIME_WARP
+    pAntler targ_shoreside.moos >& /dev/null &
+fi
+
+#-------------------------------------------------------
+#  Part 3: Create the .moos and .bhv files for testing vehicle
+# The testing vehicle's metafiles are called my_vehicle.moos/bhv
+# Launch ownship nelson
+#-------------------------------------------------------
+VNAME1="nelson"         # The testing vehicle Community
+START_POS1="x=-20,y=-75"      # Start in the middle
+START_HEADING1=$(expr 90 + $((RANDOM % 20 - 10)))
+START1="${START_POS1}, heading=${START_HEADING1}"
+
+nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
+    VNAME=$VNAME1          SHARE_LISTEN="9301"              \
+    VPORT="9001"           SHORE_LISTEN=$SHORE_LISTEN       \
+    START_POS=$START1 #for uSimMarine
+
+TRANSIT_SPEED1=$((RANDOM % 5 + 1))
+LOITER_POS1="180,-75"
 
 nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
     START_POS=$START_POS1 LOITER_POS=$LOITER_POS1           \
     TRANSIT_SPEED=$TRANSIT_SPEED1
 
-nsplug meta_vehicle.bhv targ_$VNAME2.bhv -f VNAME=$VNAME2   \
-    START_POS=$START2 LOITER_POS=$LOITER_POS2           \
-    TRANSIT_SPEED=$TRANSIT_SPEED2
-
-nsplug meta_vehicle.bhv targ_$VNAME3.bhv -f VNAME=$VNAME3   \
-    START_POS=$START_POS3 LOITER_POS=$LOITER_POS3           \
-    TRANSIT_SPEED=$TRANSIT_SPEED3 
-
-nsplug meta_vehicle.bhv targ_$VNAME4.bhv -f VNAME=$VNAME4   \
-    START_POS=$START_POS4 LOITER_POS=$LOITER_POS4           \
-    TRANSIT_SPEED=$TRANSIT_SPEED4
-
-nsplug meta_vehicle.bhv targ_$VNAME5.bhv -f VNAME=$VNAME5   \
-    START_POS=$START_POS5 LOITER_POS=$LOITER_POS5           \
-    TRANSIT_SPEED=$TRANSIT_SPEED5
-
-if [ ${JUST_MAKE} = "yes" ] ; then
-    exit 0
+if [ ${JUST_MAKE} = "no" ] ; then
+    printf "Launching $VNAME1 MOOS Community (WARP=%s) \n" $TIME_WARP
+    pAntler targ_$VNAME1.moos >& /dev/null &
 fi
+#-------------------------------------------------------
+#  Part 4: Create the .moos and .bhv files for other vehicles
+#  Launch rest of the vehicles
+#-------------------------------------------------------
+printf "Generating $AMT contacts with random heading and speeds\n"
+pickpos --amt=$AMT --vnames  > vnames.txt  
+pickpos --amt=$AMT --spd=1:5 > vspeeds.txt
+SPEEDS=(`cat vspeeds.txt`)                                              
+VNAMES=(`cat vnames.txt`)                                               
+POLYS=(`cat vpolygons.txt`)                           
 
-#-------------------------------------------------------
-#  Part 3: Launch the processes
-#-------------------------------------------------------
-printf "Launching $SNAME MOOS Community (WARP=%s) \n"  $TIME_WARP
-pAntler targ_shoreside.moos >& /dev/null &
-printf "Launching $VNAME1 MOOS Community (WARP=%s) \n" $TIME_WARP
-pAntler targ_$VNAME1.moos >& /dev/null &
-printf "Launching $VNAME2 MOOS Community (WARP=%s) \n" $TIME_WARP
-pAntler targ_$VNAME2.moos >& /dev/null &
-printf "Launching $VNAME1 MOOS Community (WARP=%s) \n" $TIME_WARP
-pAntler targ_$VNAME3.moos >& /dev/null &
-printf "Launching $VNAME2 MOOS Community (WARP=%s) \n" $TIME_WARP
-pAntler targ_$VNAME4.moos >& /dev/null &
-printf "Launching $VNAME1 MOOS Community (WARP=%s) \n" $TIME_WARP
-pAntler targ_$VNAME5.moos >& /dev/null &
+for INDEX in `seq 1 $AMT`;
+do
+    sleep 0.5
+    ARRAY_INDEX=`expr $INDEX - 1` # array start at 0
+    PORT_INDEX=`expr $INDEX + 1` # for example, the first contact need to take port 2
+
+    START=(
+    LOITER_POS=(
+    
+    VNAME=${VNAMES[$ARRAY_INDEX]}                                       
+    SPEED=${SPEEDS[$ARRAY_INDEX]}
+    VPORT=`expr $PORT_INDEX + 9000`
+    LPORT=`expr $PORT_INDEX + 9300`
+
+    nsplug meta_vehicle.moos targ_$VNAME.moos -f WARP=$TIME_WARP \
+	   VNAME=$VNAME          SHARE_LISTEN=$LPORT              \
+	   VPORT=$VPORT           SHORE_LISTEN=$SHORE_LISTEN       \
+	   START_POS=$START
+    nsplug meta_vehicle.bhv targ_$VNAME.bhv -f VNAME=$VNAME   \
+	   START_POS=$START  LOITER_POS=$LOITER_POS           \
+	   TRANSIT_SPEED=$SPEED
+    printf "Launching $VNAME MOOS Community (WARP=%s) \n" $TIME_WARP
+    pAntler targ_$VNAME.moos >& /dev/null &
+
+done
 
 printf "Done \n"
-
+#-------------------------------------------------------
+#  Part 4: start uMAC
+#-------------------------------------------------------
 uMAC targ_shoreside.moos
 
 printf "Killing all processes ... \n"
-kill %1 %2 %3 %4 %5 %6
+ktm
 printf "Done killing processes.   \n"
