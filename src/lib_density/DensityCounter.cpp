@@ -121,62 +121,13 @@ void DensityCounter::calCount()
 
       cout<<"min_range is" <<min_cpa<<endl<<flush;
       
-     m_map_density_count[speed_str]=counter;
-     m_map_min_range[speed_str] = min_cpa;
-     m_map_closest_contact[speed_str] = closest;
+     m_map_density_count[sim_speed]=counter;
+     m_map_min_range[sim_speed] = min_cpa;
+     m_map_closest_contact[sim_speed] = closest;
    }
  
  }
 
-//----------------------------------------------------------
-#if 0
-// Check to see if a single contact is in range
-
-bool DensityCounter::InRange(double m_range)
-{
-  bool in_range = false;
-  calculateGoal();
-  double step_limit = m_goal/m_own_speed/m_step;
-  //Distance to goal divided by speed of own ship gives time to destination.
-  //Time to distination divided by step size gives number of steps needed
-  for (int i=1; i<step_limit; i++) {
-   // IncrementStep(m_step);
-    
-    double dis_x = m_contact_x - m_own_x;
-    double dis_y = m_contact_y - m_own_y;
-    double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
-    if (range < m_range){
-      in_range = true;
-    }
-  }
-
-  return (in_range);
- }
-
-//----------------------------------------------------------
-//calculate range to contact 
-
-double DensityCounter::calRange()
-{
-  calculateGoal();//distance to goal
-  double step_limit = m_goal/m_own_speed/m_step;
-  //Distance to goal divided by speed of own ship gives time to destination.
-  //Time to distination divided by step size gives number of steps needed
-  m_min_range=10000;
-  for (int i=1; i<step_limit; i++) {
-    IncrementStep(m_step);
-    double dis_x = m_contact_x - m_own_x;
-    double dis_y = m_contact_y - m_own_y;
-    double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
-    if (range < m_min_range){
-      m_min_range = range;
-    }
-  }
-
-  return (m_min_range);
- }
-
-#endif 
 //-------------------------------------------------------------
 // Process noderecord class
 // process node contact and add contact
@@ -263,13 +214,14 @@ ACTable DensityCounter::getDetailedReport()
   actab << "Speed | Peak Density | Closest | min CPA";
   actab.addHeaderLines();
 
-  map<string, int>::iterator p;
+  map<double, int>::iterator p;
   for(p=m_map_density_count.begin(); p!=m_map_density_count.end(); p++) {
-    string speed_str = p->first;
+    double speed = p->first;
     double contact_count = p->second;
+    string speed_str = doubleToStringX(speed); 
     string count_str = intToString(contact_count);
-    string closest_contact = m_map_closest_contact[speed_str];
-    string closest_cpa=  doubleToStringX(m_map_min_range[speed_str]);
+    string closest_contact = m_map_closest_contact[speed];
+    string closest_cpa =  doubleToStringX(m_map_min_range[speed]);
     actab<<speed_str<<count_str<<closest_contact<<closest_cpa;
    }
 

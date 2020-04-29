@@ -69,10 +69,10 @@ class DensityCounter
   map<string, double> m_map_contact_range;
   map<string, bool> m_map_in_range;
 
-  //Speed Based Maps, i.e. first string is the simulated vessel
-  map<string, int> m_map_density_count;
-  map<string, string> m_map_closest_contact;
-  map<string, double> m_map_min_range;
+  //Speed Based Maps, i.e. key is the simulated vessel speed
+  map<double, int> m_map_density_count;
+  map<double, string> m_map_closest_contact;
+  map<double, double> m_map_min_range;
 
   double m_min_range;
 

@@ -237,37 +237,6 @@ bool TrafficDensity::buildReport()
  m_msgs <<m_ownship<< "'s speed choices" << endl;
  m_msgs <<"---------------------------------------------------------"<<endl;
   m_msgs << m_detailed_report.getFormattedString();
-
-  #if 0
-    
-  ACTable actab(4,5);
-  actab.setColumnJustify(1, "right");
-  actab << "Speed | Peak Density | Closest | min CPA";
-  actab.addHeaderLines();
-
-  map<string, int>::iterator p;
-  for(p=m_map_contact_count.begin(); p!=m_map_contact_count.end(); p++) {
-    string speed_str = p->first;
-    double contact_count = p->second;
-    string count_str = intToString(contact_count);
-    string closest_contact = m_map_closest_contact[speed_str];
-    string closest_cpa=  doubleToStringX(m_map_closest_CPA[speed_str]);
-    actab<<speed_str<<count_str<<closest_contact<<closest_cpa;
-   }
-  m_msgs << actab.getFormattedString();
-
-  #endif
-
-  #if 0
-   map<string, string>::iterator q;
-   for(q=m_map_density_reports.begin(); q!=m_map_density_reports.end(); q++) {
-      string speed_str = q->first;
-      string report = q->second;
-      m_msgs<<speed_str<<endl;
-      m_msgs<<report<<endl;
-   }
-
-   #endif
    
    return(true);
 }
