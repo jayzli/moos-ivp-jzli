@@ -51,82 +51,113 @@ DensityCounter::~DensityCounter()
 
 void DensityCounter::calCount()
 {
-  //m_range = range;
-  //m_step = step;
+  //operations that only needs to be done once per tick
+  calculateGoal(); // calculate range and heading to goal
+  cout<<"goal is "<<"x="<<m_goal_x<<" y="<<m_goal_y<<endl;
+  cout<<"distance to goal is "<<m_goal_range<<" angle to goal is "<<m_goal_heading<<endl;
   
+  //first for loop goes considers all possible speed 
   for (double j=1; j<=m_max_speed*10.01; j++){
       double sim_speed = j/10; //simulated speed go from .1 to max speed 
       string speed_str = doubleToStringX(sim_speed);
-      int counter=0;
-      double min_cpa=m_range;
-      string closest = "no vessel in range";
-      cout<<"speed is "<<speed_str<<endl<<flush;
-      // calculate range and heading to goal
-      calculateGoal();
+      int density_count = 0; // 
+      double min_cpa = m_range;//this is the minimum cpa for this particular speed for any of the vehicles
+      string closest = "no vessel in range";//store name of closest vessel
 
-      // loop through contacts will be in range
-      map<string, double>::iterator q;
-      for (q=m_map_contact_x.begin(); q!=m_map_contact_x.end(); q++){
-        string     vname = q->first;
-        double  contact_x = q->second;
-        double  contact_y = m_map_contact_y[vname];
-	double  contact_hdg = m_map_contact_heading[vname];
-	double  contact_spd = m_map_contact_speed[vname];
-						  
-	double  contact_angle = HeadingToAngle(contact_hdg);
+      cout<<"speed in consideration is "<<speed_str<<endl;
 
-	double own_x = m_own_x;
-	double own_y = m_own_y;
-						  
-	//Distance to goal divided by simulated speed of own ship gives time to destination.
-	//Time to distination divided by step size gives number of steps needed
-	double step_limit = m_goal_range/sim_speed/m_step;
+      //Distance to goal divided by simulated speed of own ship gives time to destination.
+      //Time to distination divided by step size gives number of steps needed
+      double step_limit = m_goal_range/sim_speed/m_step;
 
-        double min_range = m_range;
-	cout<<"considering contact "<<vname<<endl<<flush;
-	double pre_range = 0;
-	for (int i=1; i<step_limit; i++) {
+      double own_x = m_own_x;
+      double own_y = m_own_y;
+      //cout<<"ship x and y are: "<<own_x<<" "<<own_y<<endl;
+
+      //define working maps
+      map<string, double> map_contact_x=m_map_contact_x;
+      map<string, double> map_contact_y=m_map_contact_y;
+      map<string, double> map_contact_heading=m_map_contact_heading;
+      map<string, double> map_contact_speed=m_map_contact_speed;
+      map<string, double> map_contact_range=m_map_contact_range;
+      
+      //second loop steps forward in time for simulation
+      for (int i=1; i<step_limit; i++) {
+
+	own_x = own_x + m_step * sim_speed * cos(m_goal_heading*MPI/180);
+	own_y =  own_y + m_step * sim_speed * sin(m_goal_heading*MPI/180);
+        cout<<"ship x and y are: "<<own_x<<" "<<own_y<<endl;
+
+	double min_range = m_min_range;//this is the minimum range for a particular time slot
+	
+        //third loop goes through all contacts tracked by the class
+	map<string, double>::iterator q;
+	for (q=map_contact_x.begin(); q!=map_contact_x.end(); q++){
+	  string      vname = q->first;
+	  double  contact_x = q->second;
+	  double  contact_y = map_contact_y[vname];
+	  double  contact_hdg = map_contact_heading[vname];
+	  double  contact_spd = map_contact_speed[vname];					  
+	  double  contact_angle = HeadingToAngle(contact_hdg);
+
 	  //IncrementStep(m_step);
           contact_x = contact_x + m_step * contact_spd * cos(contact_angle*MPI/180);
           contact_y = contact_y + m_step * contact_spd * sin(contact_angle*MPI/180);
-          own_x = own_x + m_step * sim_speed * cos(m_goal_heading*MPI/180);
-          own_y =  own_y + m_step * sim_speed * sin(m_goal_heading*MPI/180);
-	 
+          cout<<"contact x and y are: "<<contact_x<<" "<<contact_y<<endl;
+	  
+	  //Save new contact info to working map
+	  map_contact_x[vname]=contact_x;
+	  map_contact_y[vname]=contact_y;
+	  
+	  //calculate range between contact vname and own ship
 	  double dis_x = contact_x - own_x;
 	  double dis_y = contact_y - own_y;
 	  double range = sqrt((dis_x*dis_x)+(dis_y*dis_y));
 
-	  //once range start opening, stop simulating forward
-	  if (range < pre_range){
-	    break;
-	  }
-	  else{
-	    pre_range = range;
-	  }
- 	  if (range < min_range){
-	    min_range = range;
-	   }
-	  if (range < min_cpa){
-	    min_cpa = range;
-	    closest = vname;
+	  if (i == 1){
+	     range;map_contact_range[vname]=range;
 	  }
 	  
-	  cout<<"range is "<<range<<endl<<flush;
-        }//min_range is now the small range between contact and ownship 
+      	  //once range start opening, stop simulating forward
+	  if (i != 1 && range > map_contact_range[vname]){
+	    map_contact_x.erase(vname);
+	    cout<<vname<<" is opening at step "<<i<<endl;
+	  } else{
+	    map_contact_range[vname]=range;
+	  }
 
-       if (min_range<m_range){
-	  counter++;
-        }      
-      }
+	  //find the minimum range less than set range 
+ 	  if (range < min_range){
+	    min_range = range;
+	    closest = vname;
+	   }
 
-      cout<<"min_range is" <<min_cpa<<endl<<flush;
-      
-     m_map_density_count[sim_speed]=counter;
+	  //if any ship is within min_cpa set 
+	  if (range < m_range){
+	    density_count++;
+	  }
+
+	  if (min_range < min_cpa){
+	    min_cpa=min_range;
+	  }
+        }//end of third for loop
+	
+	cout<<"min range is "<<min_range<<endl;
+	//min_range is now the small range between contact and ownship 
+
+        //break out of loop if all contacts are out
+        if (map_contact_x.empty()) {
+         break;
+        }
+      }//end of second for loop
+
+     cout<<"min_range is" <<min_cpa<<endl;
+    
+     m_map_density_count[sim_speed]=density_count;
      m_map_min_range[sim_speed] = min_cpa;
      m_map_closest_contact[sim_speed] = closest;
-   }
- 
- }
+  }//end of first for loop
+}
 
 //-------------------------------------------------------------
 // Process noderecord class
