@@ -22,7 +22,7 @@ Processconfig = ANTLER
   Run = pHostInfo       @ NewConsole = false
   Run = uFldShoreBroker @ NewConsole = false
   Run = uFldNodeComms   @ NewConsole = false
-  Run = uFldCollisionDetect @ NewConsole =true
+  Run = uFldCollisionDetect @ NewConsole = false
 }
 
 #include plug_pShare.moos

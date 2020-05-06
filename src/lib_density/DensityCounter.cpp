@@ -60,7 +60,7 @@ void DensityCounter::calCount()
   for (double j=1; j<=m_max_speed*10.01; j++){
       double sim_speed = j/10; //simulated speed go from .1 to max speed 
       string speed_str = doubleToStringX(sim_speed);
-      int density_count = 0; // 
+      int peak_density = 0; // 
       double min_cpa = m_range;//this is the minimum cpa for this particular speed for any of the vehicles
       string closest = "no vessel in range";//store name of closest vessel
 
@@ -93,6 +93,8 @@ void DensityCounter::calCount()
 	
         //third loop goes through all contacts tracked by the class
 	map<string, double>::iterator q;
+	int density_count = 0;
+	
 	for (q=map_contact_x.begin(); q!=map_contact_x.end();){
 	  string      vname = q->first;
 	  double  contact_x = q->second;
@@ -137,8 +139,8 @@ void DensityCounter::calCount()
 	  
       	  //once range start opening, stop simulating forward
 	  if (i != 1 && range > map_contact_range[vname]){
-	    q = map_contact_x.erase(q);
 	    cout<<vname<<" is opening at step "<<i<<endl;
+	    q = map_contact_x.erase(q);
 	  } else{
 	    q++;
 	    map_contact_range[vname]=range;
@@ -146,8 +148,13 @@ void DensityCounter::calCount()
 
 	  cout<<"----------------------------------------------"<<endl;
         }//end of third for loop
-	
+
+	if (peak_density < density_count){
+	  peak_density = density_count;
+	}
+
 	cout<<"min range for time step "<<i<< " is "<<min_range<<endl;
+	cout<<"Number of contact in range is "<<density_count<<endl;
 	//min_range is now the small range between contact and ownship 
 
         //break out of loop if all contacts are out
@@ -157,9 +164,9 @@ void DensityCounter::calCount()
 	cout<<"**********************************************"<<endl;
       }//end of second for loop
 
-     cout<<"min_range so far for all time steps" <<min_cpa<<endl;
+     cout<<"min_range for this speed is" <<min_cpa<<endl;
     
-     m_map_density_count[sim_speed]=density_count;
+     m_map_density_count[sim_speed]=peak_density;
      m_map_min_range[sim_speed] = min_cpa;
      m_map_closest_contact[sim_speed] = closest;
 
