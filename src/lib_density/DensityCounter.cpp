@@ -90,11 +90,10 @@ void DensityCounter::calCount()
         cout<<"ship x and y are: "<<own_x<<" "<<own_y<<endl;
 
 	double min_range = m_min_range;//this is the minimum range for a particular time slot
-	
-        //third loop goes through all contacts tracked by the class
-	map<string, double>::iterator q;
 	int density_count = 0;
 	
+        //third loop goes through all contacts tracked by the class
+	map<string, double>::iterator q;	
 	for (q=map_contact_x.begin(); q!=map_contact_x.end();){
 	  string      vname = q->first;
 	  double  contact_x = q->second;

@@ -185,9 +185,9 @@ ProcessConfig = uProcessWatch
  }
 
 //--------------------------------------------------
-// uFldCollisionDect Configuration Block
+// uFldWrapDect Configuration Block
 
-ProcessConfig = uMAC
+ProcessConfig = uFldWrapDetect
 {
   AppTick       = 4
   CommsTick     = 4
