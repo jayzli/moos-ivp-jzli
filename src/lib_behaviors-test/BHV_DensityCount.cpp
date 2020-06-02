@@ -118,7 +118,7 @@ void BHV_DensityCount::onRunToIdleState()
 IvPFunction* BHV_DensityCount::onRunState()
 {
   bool ok1;                                                                         
-  m_density_str = getBufferDoubleVal("NAV_X", ok1);                                                           
+  m_density_str = getBufferDoubleVal("DENSITYCOUNT", ok1);                                                           
   if(!ok1) {   
     postWMessage("No Density Count provdiedownship");                      return(0);                  
   }                                                                                      
@@ -146,6 +146,9 @@ IvPFunction* BHV_DensityCount::buildFunctionWithZAICVector()
    vector<double> domain_vals;
    vector<double> range_vals;
 
+   domain_vals=biteString(m_density_str, ':');
+   range_vals=biteString(m_density_str, ',');
+	      
    zaic_vecctor.setDomainVals(domain_vals);
    zaic_vecctor.setRangeVals(range_vals);
  
