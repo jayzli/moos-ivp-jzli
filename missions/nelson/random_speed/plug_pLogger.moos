@@ -11,7 +11,11 @@ ProcessConfig = pLogger
   AsyncLog 	= true
   FileTimeStamp = true
 
-  // Log it all!!!!!
+
   LogAuxSrc = true
-  WildCardLogging = true 
+  WildCardLogging = false
+  
+  //Log COLLISION related
+  Log       = *COLLISION* @ 0
+
 }

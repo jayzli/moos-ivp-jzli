@@ -1,4 +1,3 @@
-
 /************************************************************/
 /*    NAME: John Li                                              */
 /*    ORGN: MIT                                             */
@@ -55,7 +54,8 @@ public:
   double m_nav_hdg;
   double m_nav_spd;
   double m_goal;  // Goal is the distance to destination
-
+  double m_best_speed; //Recommended Speed
+  
   DensityCounter m_density_counter;
 
   int m_count;

@@ -7,4 +7,5 @@ ProcessConfig = pNodeReporter
   CommsTick   = 2
   
   VESSEL_TYPE = KAYAK
+  group       = $(GROUP)
 }

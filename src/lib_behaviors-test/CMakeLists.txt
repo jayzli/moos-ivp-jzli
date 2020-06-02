@@ -1,6 +1,6 @@
 #--------------------------------------------------------
 # The CMakeLists.txt for:              lib_behaviors-test
-# Author(s):                                
+# Author(s):                                      John Li
 #--------------------------------------------------------
 
 # Set System Specific Libraries
@@ -29,13 +29,12 @@ MACRO(ADD_BHV BHV_NAME)
     ${SYSTEM_LIBS} )
 ENDMACRO(ADD_BHV)
 
-
 #--------------------------------------------------------
-#                                      BHV_SimpleWaypoint
+#                                        BHV_DensityCount
 #--------------------------------------------------------
-ADD_LIBRARY(BHV_SimpleWaypoint SHARED 
-   BHV_SimpleWaypoint.cpp AOF_SimpleWaypoint.cpp)
-TARGET_LINK_LIBRARIES(BHV_SimpleWaypoint
+ADD_LIBRARY(BHV_DensityCount SHARED
+   BHV_DensityCount.cpp)
+TARGET_LINK_LIBRARIES(BHV_DensityCount
    helmivp
    behaviors 
    ivpbuild 

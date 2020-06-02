@@ -22,5 +22,13 @@ done
 #-------------------------------------------------------
 alogcd LOG*${FILENAME}*/*.alog > alogcd.txt
 cat alogcd.txt
-ENCOUNTER=`cat alogcd.txt | grep Encounters:`
-echo $ENCOUNTER
+ENCOUNTER=`cat alogcd.txt | grep Encounters: |cut -d' ' -f3`
+MISSES=`cat alogcd.txt | grep Misses: |cut -d' ' -f3`
+COLLISIONS=`cat alogcd.txt | grep Collisions: |cut -d' ' -f3`
+WORST=`cat alogcd.txt | grep Worst: |cut -d' ' -f3`
+a=$(($COLLISIONS * 10))
+b=$(($MISSES * 5))
+c=$(($ENCOUNTER * 2))
+SCORE=$(($c - $a ))
+SCORE=$(($SCORE - $b))
+echo The score for this run is $SCORE

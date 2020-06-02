@@ -37,6 +37,7 @@ Behavior = BHV_Waypoint
   endflag   = RETURN  = true   
   endflag   = LOITER  = false
    speed = 1.3
+   speed_alt = 3
    radius = 3.0
    nm_radius = 15.0
    point = $(LOITER_POS)
@@ -81,3 +82,9 @@ Behavior = BHV_StationKeep
         visual_hints = vertex_size=0, edge_color=gray50, label_color=invisible
 }
 
+//-----------------------------------------------
+Behavior = BHV_DensityCount
+{
+  name     = density-counter
+  pwt      = 50
+}

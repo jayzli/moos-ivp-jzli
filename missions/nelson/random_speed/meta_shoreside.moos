@@ -106,8 +106,10 @@ ProcessConfig = pLogger
   AsyncLog      = true
   FileTimeStamp = true
 
-  // Log it all!!!!!
-  WildCardLogging = true 
+  WildCardLogging = false                                            
+                                                                     
+  //Log COLLISION related                                            
+  Log       = *COLLISION* @ 0  
 }
 
 
@@ -157,7 +159,8 @@ ProcessConfig = uProcessWatch
 
   NOWATCH = uXMS*
   NOWATCH = uPokeDB*
-
+  NOWATCH = UProcessWatch*
+  
   SUMMARY_WAIT = 12
 }
 
@@ -171,6 +174,7 @@ ProcessConfig = uProcessWatch
 
    condition = DEPLOY_ALL = true                                 
 
+   ignore_group = blue
    encounter_flag = ENCOUNTER = $CPA                             
    collision_flag = COLLISION = $CPA                             
    near_miss_flag = NEAR_MISS = vname1=$V1,vname2=$V2,cpa=$CPA   

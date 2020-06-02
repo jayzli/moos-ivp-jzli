@@ -36,6 +36,7 @@ TrafficDensity::TrafficDensity()
 
   m_count = 0;
 
+  m_best_speed =0;
   //m_contact_count[0] = 0;
   
 }
@@ -115,7 +116,11 @@ bool TrafficDensity::Iterate()
   m_report = m_density_counter.getReport();
   m_detailed_report = m_density_counter.getDetailedReport();
   m_contact_report = m_density_counter.getContacts();
+  
+  string densitycounts = m_density_counter.getDensities();
 
+  Notify("DENSITYCOUNTS",densitycounts);
+  
   AppCastingMOOSApp::PostReport();
   return(true);
 }

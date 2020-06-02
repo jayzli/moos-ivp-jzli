@@ -1,4 +1,6 @@
 #!/bin/bash
+source ~/.bashrc
+cd /Users/johnli/moos-ivp-jzli/missions/nelson/avoidcol_random_speed/   
 #-----------------------------------------------------
 # script : launch_vehicle.sh
 # Author: John Li
@@ -52,7 +54,7 @@ fi
 # Launch ownship nelson
 #-------------------------------------------------------
 VNAME1="nelson"         # The testing vehicle Community
-START_POS1="x=-20,y=-75"      # Start in the middle
+START_POS1="x=-90,y=-75"      # Start in the middle
 START_HEADING1=$(expr 90 + $((RANDOM % 20 - 10)))
 START1="${START_POS1}, heading=${START_HEADING1}"
 
@@ -124,3 +126,4 @@ uMAC targ_shoreside.moos
 printf "Killing all processes ... \n"
 ktm
 printf "Done killing processes.   \n"
+./analysis.sh

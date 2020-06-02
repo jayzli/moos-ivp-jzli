@@ -1,7 +1,7 @@
 /*****************************************************************/
-/*    NAME: John Li                                     */
+/*    NAME: John Li                                              */
 /*    ORGN: Dept of Mechanical Eng / CSAIL, MIT Cambridge MA     */
-/*    FILE: DensityCounter.cpp                                        */
+/*    FILE: DensityCounter.cpp                                   */
 /*    DATE: Mar 19th 2020                                        */
 /*****************************************************************/
 
@@ -130,6 +130,7 @@ void DensityCounter::calCount()
 	  //if any ship is within min_cpa set 
 	  if (range < m_range){
 	    density_count++;
+	    
 	  }
 
 	  if (min_range < min_cpa){
@@ -295,3 +296,27 @@ ACTable DensityCounter::getContacts()
 
   return(actab);
 }
+
+        
+ //-------------------------------------------------------------
+string DensityCounter::getDensities()
+{
+    
+  string densities;
+
+  map<double, int>::iterator p;
+  for(p=m_map_density_count.begin(); p!=m_map_density_count.end(); p++) {
+    double speed = p->first;
+    int density = p->second;
+    string speed_str =doubleToString(speed);
+    string density_str = intToString(density);
+    densities += speed_str;
+    densities += ":";
+    densities += density_str;
+    densities += ",";
+   }
+
+  return(densities);
+}
+
+        
