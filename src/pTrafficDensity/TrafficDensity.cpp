@@ -77,7 +77,7 @@ bool TrafficDensity::OnNewMail(MOOSMSG_LIST &NewMail)
       m_nav_hdg = dval;                                                          
     else if(key == "NAV_SPEED")                                                  
       m_nav_spd = dval;                                                          
-    else if(key == "NODE_REPORT")                                                
+    else if(key == "NODE_REPORT")                                             
       handleMailNodeReport(sval);
     else                                                                         
       reportRunWarning("Unhandled Mail: " + key);    
@@ -117,9 +117,9 @@ bool TrafficDensity::Iterate()
   m_detailed_report = m_density_counter.getDetailedReport();
   m_contact_report = m_density_counter.getContacts();
   
-  string densitycounts = m_density_counter.getDensities();
+  string densitycount = m_density_counter.getDensities();
 
-  Notify("DENSITYCOUNTS",densitycounts);
+  Notify("DENSITYCOUNT",densitycount);
   
   AppCastingMOOSApp::PostReport();
   return(true);

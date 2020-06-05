@@ -1,7 +1,7 @@
 /************************************************************/
-/*    NAME: John Li                                              */
+/*    NAME: John Li                                         */
 /*    ORGN: MIT                                             */
-/*    FILE: BHV_DensityCount.cpp                                    */
+/*    FILE: BHV_DensityCount.cpp                            */
 /*    DATE:                                                 */
 /************************************************************/
 
@@ -11,6 +11,8 @@
 #include "BuildUtils.h"
 #include "BHV_DensityCount.h"
 #include "ZAIC_Vector.h"
+#include <string>
+#include <stdlib.h>
 using namespace std;
 
 //---------------------------------------------------------------
@@ -139,23 +141,26 @@ IvPFunction* BHV_DensityCount::onRunState()
 
 IvPFunction* BHV_DensityCount::buildFunctionWithZAICVector()
 {
-   IvPDomain domain;
-   domain.addVar("speed", 0, 15, 15.1);
-
-   ZAIC_Vector  zaic_vector(domain, "speed");
+   ZAIC_Vector  zaic_vector(m_domain, "speed");
    vector<double> domain_vals;
    vector<double> range_vals;
 
-   domain_vals=biteString(m_density_str, ':');
-   range_vals=biteString(m_density_str, ',');
-	      
-   zaic_vecctor.setDomainVals(domain_vals);
-   zaic_vecctor.setRangeVals(range_vals);
+   do{
+     string str1=biteStringX(m_density_str, ':');
+     string str2=biteStringX(m_density_str, ',');
+     double val1=atof(str1.c_str());
+     double val2=atof(str2.c_str());
+     domain_vals.push_back(val1);
+     range_vals.push_back(val2);
+   } while (!m_density_str.empty());
+   
+   zaic_vector.setDomainVals(domain_vals);
+   zaic_vector.setRangeVals(range_vals);
  
    IvPFunction *ivp_function = 0;
-   if(zaic_vector.stateOK())
-     ivp_function = zaic_vector.extractIvPFunction();
-   else
-    cout << zaic_vector.getWarnings();
-   return(ivp_function)
+   //if(zaic_vector.stateOK())
+   ivp_function = zaic_vector.extractIvPFunction();
+     // else
+     // cout << zaic_vector.getWarnings();
+   return(ivp_function);
 }
