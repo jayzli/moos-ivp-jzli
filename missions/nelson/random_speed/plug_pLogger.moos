@@ -13,9 +13,6 @@ ProcessConfig = pLogger
 
 
   LogAuxSrc = true
-  WildCardLogging = false
-  
-  //Log COLLISION related
-  Log       = *COLLISION* @ 0
+  WildCardLogging = true
 
 }

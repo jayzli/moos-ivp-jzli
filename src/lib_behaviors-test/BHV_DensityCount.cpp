@@ -25,11 +25,11 @@ BHV_DensityCount::BHV_DensityCount(IvPDomain domain) :
   IvPBehavior::setParam("name", "density_count");
 
   // Declare the behavior decision space
-  m_domain = subDomain(m_domain, "course,speed");
+  m_domain = subDomain(m_domain, "speed");
 
   m_density_str = "";
   // Add any variables this behavior needs to subscribe for
-  addInfoVars("DENSITYCOUNT");
+  addInfoVars("DENSITYUTIL");
 }
 
 //---------------------------------------------------------------
@@ -120,9 +120,9 @@ void BHV_DensityCount::onRunToIdleState()
 IvPFunction* BHV_DensityCount::onRunState()
 {
   bool ok1;                                                                         
-  m_density_str = getBufferDoubleVal("DENSITYCOUNT", ok1);                                                           
+  m_density_str = getBufferStringVal("DENSITYUTIL", ok1);                                                           
   if(!ok1) {   
-    postWMessage("No Density Count provdiedownship");                      return(0);                  
+    postWMessage("No Density Count provided for ownship");                      return(0);                  
   }                                                                                      
          
 

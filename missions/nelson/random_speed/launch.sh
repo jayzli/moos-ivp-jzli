@@ -61,12 +61,12 @@ nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
     VPORT="9001"           SHORE_LISTEN=$SHORE_LISTEN       \
     GROUP='red'            START_POS=$START1 #for uSimMarine
 
-TRANSIT_SPEED1=$((RANDOM % 5 + 1))
+TRANSIT_SPEED1=$((RANDOM % 5 + 3))
 LOITER_POS1="180,-75"
-
+TRANSIT_SPEED2=4
 nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
     START_POS=$START1 LOITER_POS=$LOITER_POS1           \
-    TRANSIT_SPEED=$TRANSIT_SPEED1
+    TRANSIT_SPEED=$TRANSIT_SPEED2
 
 if [ ${JUST_MAKE} = "no" ] ; then
     printf "Launching $VNAME1 MOOS Community (WARP=%s) \n" $TIME_WARP

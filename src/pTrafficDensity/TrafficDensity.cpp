@@ -117,8 +117,11 @@ bool TrafficDensity::Iterate()
   m_detailed_report = m_density_counter.getDetailedReport();
   m_contact_report = m_density_counter.getContacts();
   
-  string densitycount = m_density_counter.getDensities();
+  string densityutil = m_density_counter.getUtilities();
 
+  Notify("DENSITYUTIL",densityutil);
+
+  string densitycount = m_density_counter.getDensities();
   Notify("DENSITYCOUNT",densitycount);
   
   AppCastingMOOSApp::PostReport();

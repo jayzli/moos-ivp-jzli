@@ -319,4 +319,25 @@ string DensityCounter::getDensities()
   return(densities);
 }
 
+ //-------------------------------------------------------------
+string DensityCounter::getUtilities()
+{
+    
+  string utilities;
+
+  map<double, int>::iterator p;
+  for(p=m_map_density_count.begin(); p!=m_map_density_count.end(); p++) {
+    double speed = p->first;
+    int density = p->second;   
+    string speed_str =doubleToStringX(speed);
+    int utility = 100 - 25 * density;
+    string utility_str = intToString(utility);
+    utilities += speed_str;
+    utilities += ":";
+    utilities += utility_str;
+    utilities += ",";
+   }
+
+  return(utilities);
+}
         

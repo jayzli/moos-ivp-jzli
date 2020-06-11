@@ -35,6 +35,7 @@ class DensityCounter
   ACTable getDetailedReport(); //report detail results
   ACTable getContacts();//report all contacts being tracked
   string  getDensities();//return all speed and contact density pairs
+  string  getUtilities();//return all speed and associated utilitie
   
   void setX(double v)                           {m_own_x=v;}
   void setY(double v)                           {m_own_y=v;}

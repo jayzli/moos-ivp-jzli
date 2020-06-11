@@ -86,5 +86,5 @@ Behavior = BHV_StationKeep
 Behavior = BHV_DensityCount
 {
   name     = density-counter
-  pwt      = 50
+  pwt      = 200
 }

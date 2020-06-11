@@ -33,7 +33,7 @@ Behavior = BHV_Waypoint
   name       = waypt_destination
   pwt          = 100
   condition = MODE==LOITERING
-  runflag    = VEHICLE_UNDERWAY = TRUE                                            
+  runflag    = VEHICLE_UNDERWAY = TRUE                                            activeflag = EAST = true
   endflag   = RETURN = true
   endflag   = LOITER = false					
 
@@ -53,6 +53,7 @@ Behavior = BHV_Waypoint
   pwt       = 100
   updates   = RETURN_UPDATES
   condition = MODE==RETURNING
+  activeflag = WEST = true
   endflag   = LOITER = true
   endflag   = RETURN = false
   
