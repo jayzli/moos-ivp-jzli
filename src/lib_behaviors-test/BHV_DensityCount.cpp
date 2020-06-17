@@ -201,7 +201,7 @@ IvPFunction* BHV_DensityCount::onRunState()
   postViewablePolygon();
   inPolygon();
   
-  if (!m_past_tpoint && !m_in_poly)  {
+  if (!m_past_tpoint || !m_in_poly)  {
     // find and display transition point
     findTransitionPoint();
     
@@ -327,7 +327,7 @@ void BHV_DensityCount::findTransitionPoint()
   if(!m_polygon_set)
     postEMessage("Polygon not set, can't calculate activation point");
 
-  if(m_goal_set && m_polygon_set && !m_in_poly) {
+  if(m_goal_set && m_polygon_set) {
     double rel_ang =  relAng(m_osx, m_osy, m_goal_x, m_goal_y);
     double dist = m_new_poly.dist_to_poly(m_osx, m_osy, rel_ang);
     postMessage("DIST_TO_POLY", doubleToStringX(dist));
@@ -347,7 +347,7 @@ void BHV_DensityCount::findTransitionPoint()
     
     else {
       m_past_tpoint = true; 
-      postEMessage("Behavior not active inside traffic lane");
+      postMessage("PAST_TPOINT","Behavior not active past transition point");
     }
   }
 }
@@ -364,7 +364,7 @@ void BHV_DensityCount::inPolygon()
   if(m_goal_set && m_polygon_set) {
     if(m_new_poly.contains(m_osx, m_osy)) {
        m_in_poly = true;
-       postEMessage("Behavior not active inside traffic lane");
+       postMessage("IN_PLOYGON", "Behavior not active in traffic lane");
     }
     else
        m_in_poly = false;
