@@ -13,6 +13,11 @@
 #include "ZAIC_Vector.h"
 #include <string>
 #include <stdlib.h>
+#include "XYFormatUtilsPoly.h"
+#include "XYPoint.h"
+#include "AngleUtils.h"
+#include "GeomUtils.h"
+
 using namespace std;
 
 //---------------------------------------------------------------
@@ -28,8 +33,29 @@ BHV_DensityCount::BHV_DensityCount(IvPDomain domain) :
   m_domain = subDomain(m_domain, "speed");
 
   m_density_str = "";
+
+  // Visual Hint Defaults
+  m_hint_vertex_size   = 1;
+  m_hint_edge_size     = 1;
+  m_hint_vertex_color  = "dodger_blue";
+  m_hint_edge_color    = "white";
+  m_hint_nextpt_color  = "yellow";
+  m_hint_nextpt_lcolor = "aqua";
+  m_hint_nextpt_vertex_size = 5;
+  m_hint_poly_label="Traffic Lane";
+
+  
+  m_waypoint_engine.setPerpetual(true);
+  m_waypoint_engine.setRepeatsEndless(true);
+
+  m_goal_set = false;
+  m_polygon_set = false;
+  m_past_tpoint = false;
+  m_in_poly = false;
+
+  m_t_dist = 0;
   // Add any variables this behavior needs to subscribe for
-  addInfoVars("DENSITYUTIL");
+  addInfoVars("NAV_X, NAV_Y, NAV_HEADING, NAV_SPEED, DENSITYUTIL, VIEW_POINT");
 }
 
 //---------------------------------------------------------------
@@ -43,12 +69,33 @@ bool BHV_DensityCount::setParam(string param, string val)
   // Get the numerical value of the param argument for convenience once
   double double_val = atof(val.c_str());
   
-  if((param == "foo") && isNumber(val)) {
-    // Set local member variables here
+  if(param == "polygon") {
+    m_new_poly = string2Poly(val);
+    cout << "new_poly size: " << m_new_poly.size() << endl;
+
+    if(!m_new_poly.is_convex())  // Should be convex - false otherwise
+      return(false);
+    
+    XYSegList new_seglist = m_new_poly.exportSegList(m_osx, m_osy);
+    m_waypoint_engine.setSegList(new_seglist);
+
+    m_polygon_set = true;
     return(true);
   }
-  else if (param == "bar") {
-    // return(setBooleanOnString(m_my_bool, val));
+
+  else if(param == "transition_distance") {
+    double dval = atof(val.c_str());                                 
+    if((dval < 0) || (!isNumber(val)))                                  
+      return(false);                                                  
+    m_t_dist = dval;
+    return(true);
+  }
+  else if(param == "visual_hints")  {
+    vector<string> svector = parseStringQ(val, ',');
+    unsigned int i, vsize = svector.size();
+    for(i=0; i<vsize; i++) 
+      handleVisualHint(svector[i]);
+    return(true);
   }
 
   // If not handled above, then just return false;
@@ -119,26 +166,65 @@ void BHV_DensityCount::onRunToIdleState()
 
 IvPFunction* BHV_DensityCount::onRunState()
 {
-  bool ok1;                                                                         
-  m_density_str = getBufferStringVal("DENSITYUTIL", ok1);                                                           
+  bool ok1, ok2, ok3, ok4;
+  // ownship position in meters from some 0,0 reference point.
+  m_osx = getBufferDoubleVal("NAV_X", ok1);
+  m_osy = getBufferDoubleVal("NAV_Y", ok2);
+  m_osh = getBufferDoubleVal("NAV_HEADING", ok3);
+  m_osv = getBufferDoubleVal("NAV_SPEED", ok4);
+
+  // Must get ownship information from the InfoBuffer
+  if(!ok1 || !ok2)
+    postEMessage("No ownship X/Y info in info_buffer.");  
+  if(!ok3)
+    postEMessage("No ownship HEADING info in info_buffer.");
+  if(!ok4)
+    postEMessage("No ownship SPEED info in info_buffer.");
+  if(!ok1 || !ok2 || !ok3 || !ok4)
+    return(0);
+  
+  bool ok5;                                              
+  m_density_str = getBufferStringVal("DENSITYUTIL", ok5);                    
   if(!ok1) {   
-    postWMessage("No Density Count provided for ownship");                      return(0);                  
-  }                                                                                      
-         
+    postWMessage("No Density Count provided for ownship");
+    return(0);                  
+  }                                                                                     
+  bool ok6;
+  string goal_str = getBufferStringVal("VIEW_POINT", ok6);
+  if(!ok6)  {
+    postEMessage("No goal info in info_buffer.");
+    return(0);
+  }
+  else 
+    handleViewPoint(goal_str);
 
-  // Part 1: Build the IvP function
-  IvPFunction *ipf = 0;
-  ipf = buildFunctionWithZAICVector();
+  postViewablePolygon();
+  inPolygon();
+  
+  if (!m_past_tpoint && !m_in_poly)  {
+    // find and display transition point
+    findTransitionPoint();
+    
+     // Part 1: Build the IvP function
+    IvPFunction *ipf = 0;
+    ipf = buildFunctionWithZAICVector();
 
-  // Part N: Prior to returning the IvP function, apply the priority wt
-  // Actual weight applied may be some value different than the configured
-  // m_priority_wt, depending on the behavior author's insite.
-  if(ipf)
-    ipf->setPWT(m_priority_wt);
-
-  return(ipf);
+    if(ipf)
+      ipf->setPWT(m_priority_wt);
+    else                                                                   
+    postEMessage("Unable to generate density counter IvP function");           
+    
+    return(ipf);
+  }
+  
+  else {
+    return(0);
+  }
 }
 
+//---------------------------------------------------------------
+// Procedure: buildFunctionWithZAICVector()
+//   Purpose: 
 IvPFunction* BHV_DensityCount::buildFunctionWithZAICVector()
 {
    ZAIC_Vector  zaic_vector(m_domain, "speed");
@@ -163,4 +249,124 @@ IvPFunction* BHV_DensityCount::buildFunctionWithZAICVector()
      // else
      // cout << zaic_vector.getWarnings();
    return(ivp_function);
+}
+
+//-----------------------------------------------------------
+// Procedure: postViewablePolygon()
+//      Note: Even if the polygon is posted on each iteration, the
+//            helm will filter out unnecessary duplicate posts.
+
+void BHV_DensityCount::postViewablePolygon()
+{
+  XYSegList seglist = m_waypoint_engine.getSegList();
+  seglist.set_color("vertex", m_hint_vertex_color);
+  seglist.set_color("edge", m_hint_edge_color);
+  seglist.set_edge_size(m_hint_edge_size);
+  seglist.set_vertex_size(m_hint_vertex_size);
+  // Handle the label setting
+  string bhv_tag = tolower(getDescriptor());
+  bhv_tag = m_us_name + "_" + bhv_tag;
+  seglist.set_label(bhv_tag);
+  if(m_hint_poly_label == "")
+    seglist.set_label(bhv_tag);
+  else
+    seglist.set_label(m_hint_poly_label);
+
+  string poly_spec = seglist.get_spec();
+  postMessage("VIEW_POLYGON", poly_spec);
+}
+
+//-----------------------------------------------------------
+// Procedure: handleVisualHint()
+
+void BHV_DensityCount::handleVisualHint(string hint)
+{
+  string param = tolower(stripBlankEnds(biteString(hint, '=')));
+  string value = stripBlankEnds(hint);
+  
+  if((param == "vertex_size") && isNumber(value))
+    m_hint_vertex_size = atof(value.c_str());
+  else if((param == "edge_size") && isNumber(value))
+    m_hint_edge_size = atof(value.c_str());
+  else if((param == "vertex_color") && isColor(value))
+    m_hint_vertex_color = value;
+  else if((param == "edge_color") && isColor(value))
+    m_hint_edge_color = value;
+  else if((param == "nextpt_color") && isColor(value))
+    m_hint_nextpt_color = value;
+  else if((param == "nextpt_lcolor") && isColor(value))
+    m_hint_nextpt_lcolor = value;
+  else if((param == "nextpt_vertex_size") && isNumber(value))
+    m_hint_nextpt_vertex_size = atof(value.c_str());
+  else if(param == "label")
+    m_hint_poly_label = value;
+}
+
+//---------------------------------------------------------
+//Procedure: handleViewPoint()
+void BHV_DensityCount::handleViewPoint(string val)
+{
+  vector<string> str_vector = parseString(val, ',');
+  string x_val = str_vector[0]; 
+  string y_val = str_vector[1];
+  string str1=biteStringX(x_val, '=');
+  string str2=biteStringX(y_val, '=');
+  m_goal_x = atof(x_val.c_str());
+  m_goal_y = atof(y_val.c_str());
+  m_goal_set = true;
+}
+
+
+//---------------------------------------------------------
+//Procedure: findTransitionPoint()
+void BHV_DensityCount::findTransitionPoint()
+{
+  if(!m_goal_set)
+    postEMessage("Goal not set, can't calculate activation point");
+  
+  if(!m_polygon_set)
+    postEMessage("Polygon not set, can't calculate activation point");
+
+  if(m_goal_set && m_polygon_set && !m_in_poly) {
+    double rel_ang =  relAng(m_osx, m_osy, m_goal_x, m_goal_y);
+    double dist = m_new_poly.dist_to_poly(m_osx, m_osy, rel_ang);
+    postMessage("DIST_TO_POLY", doubleToStringX(dist));
+
+    //dist -= m_t_dist; //change to transition distance
+
+    if(dist > m_t_dist)  {
+      dist -= m_t_dist;
+      XYPoint end_pt = projectPoint(rel_ang, dist, m_osx, m_osy);
+      m_seglist.clear(); 
+      m_seglist.set_active(true);
+      m_seglist.add_vertex(m_osx, m_osy);
+      m_seglist.add_vertex(end_pt);
+      m_seglist.set_label("vector to transition point: " + end_pt.get_spec());
+      postMessage("VIEW_SEGLIST", m_seglist.get_spec());
+    }
+    
+    else {
+      m_past_tpoint = true; 
+      postEMessage("Behavior not active inside traffic lane");
+    }
+  }
+}
+
+//---------------------------------------------------------
+//Procedure: inPolygon()
+void BHV_DensityCount::inPolygon()
+{
+  if(!m_goal_set)
+    postEMessage("Goal not set, can't calculate activation point");
+  if(!m_polygon_set)
+    postEMessage("Polygon not set, can't calculate activation point");
+
+  if(m_goal_set && m_polygon_set) {
+    if(m_new_poly.contains(m_osx, m_osy)) {
+       m_in_poly = true;
+       postEMessage("Behavior not active inside traffic lane");
+    }
+    else
+       m_in_poly = false;
+  }
 }

@@ -32,8 +32,9 @@ public:
   bool buildReport();
   
  protected:
-   void RegisterVariables();
-   void handleMailNodeReport(std::string);
+  void RegisterVariables();
+  void handleMailNodeReport(std::string);
+  void handleMailViewPoint(std::string);
   void ChangeHeading(double m_heading_range);//not exactly accurate
   void ChangeSpeed(double m_speed_range);//not exactly accurate
   
@@ -53,6 +54,8 @@ public:
   double m_nav_y;
   double m_nav_hdg;
   double m_nav_spd;
+  double m_goal_x;
+  double m_goal_y;
   double m_goal;  // Goal is the distance to destination
   double m_best_speed; //Recommended Speed
   

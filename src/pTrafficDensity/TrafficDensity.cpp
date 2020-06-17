@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "NodeRecordUtils.h"
 #include "ACTable.h"
+#include <string>
 
 using namespace std;
 
@@ -37,6 +38,10 @@ TrafficDensity::TrafficDensity()
   m_count = 0;
 
   m_best_speed =0;
+
+  m_goal_x = 0;
+
+  m_goal_y = 0;
   //m_contact_count[0] = 0;
   
 }
@@ -77,8 +82,10 @@ bool TrafficDensity::OnNewMail(MOOSMSG_LIST &NewMail)
       m_nav_hdg = dval;                                                          
     else if(key == "NAV_SPEED")                                                  
       m_nav_spd = dval;                                                          
-    else if(key == "NODE_REPORT")                                             
+    else if(key == "NODE_REPORT")
       handleMailNodeReport(sval);
+    else if(key == "VIEW_POINT")
+      handleMailViewPoint(sval);
     else                                                                         
       reportRunWarning("Unhandled Mail: " + key);    
 
@@ -109,7 +116,7 @@ bool TrafficDensity::Iterate()
   m_density_counter.setStep(m_step);
   m_density_counter.setMaxSpeed(m_max_speed);
 
-  m_density_counter.setGoal(100, -75);//temporary place holder
+  m_density_counter.setGoal(m_goal_x, m_goal_y);//set goal to next waypoint
 
   m_density_counter.calCount();
 
@@ -175,10 +182,11 @@ void TrafficDensity::RegisterVariables()
   AppCastingMOOSApp::RegisterVariables();
   
   Register("NODE_REPORT", 0);            
-  Register("NAV_X", 0);                                                          
-  Register("NAV_Y", 0);                                                          
-  Register("NAV_SPEED", 0);                                                      
+  Register("NAV_X", 0);                                                         
+  Register("NAV_Y", 0);                                                         
+  Register("NAV_SPEED", 0);                                                     
   Register("NAV_HEADING", 0);
+  Register("VIEW_POINT", 0);   
 }
 
 //---------------------------------------------------------
@@ -218,7 +226,21 @@ void TrafficDensity::handleMailNodeReport(string report)
   
 }
      
-
+//---------------------------------------------------------
+//Procedure: handleMailViewPoint()
+void TrafficDensity::handleMailViewPoint(string val)
+{
+  vector<string> str_vector = parseString(val, ',');
+  string x_val = str_vector[0]; 
+  string y_val = str_vector[1];
+  string str1=biteStringX(x_val, '=');
+  string str2=biteStringX(y_val, '=');
+  m_goal_x = atof(x_val.c_str());
+  m_goal_y = atof(y_val.c_str());
+  string goal = "x= " + x_val + ", y=" + y_val;
+  Notify("GOAL", goal);
+}
+     
 //---------------------------------------------------------
 //Procedure: buildReport()
 bool TrafficDensity::buildReport()
@@ -234,6 +256,8 @@ bool TrafficDensity::buildReport()
   string spd = doubleToStringX(m_nav_spd);
   string report  = x + "," +  y+ " , " + hdg +"," + spd;
   m_msgs<<"From App, own ship x, y, hdg, spd: "<<report<<endl;
+  string goal = "x = " + doubleToStringX(m_goal_x) + ", y = " + doubleToStringX(m_goal_y);
+  m_msgs<<"Goal location is: "<<goal<<endl;
   
   m_msgs <<"---------------------------------------------------------"<< endl;
   m_msgs<<"From Class: "<<m_report<<endl;

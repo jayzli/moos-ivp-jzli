@@ -52,7 +52,7 @@ fi
 # Launch ownship nelson
 #-------------------------------------------------------
 VNAME1="nelson"         # The testing vehicle Community
-START_POS1="x=-20,y=-75"      # Start in the middle
+START_POS1="x=-100,y=-75"      # Start in the middle
 START_HEADING1=$(expr 90 + $((RANDOM % 20 - 10)))
 START1="${START_POS1}, heading=${START_HEADING1}"
 

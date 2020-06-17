@@ -87,4 +87,7 @@ Behavior = BHV_DensityCount
 {
   name     = density-counter
   pwt      = 200
+  transition_distance = 10
+
+  polygon  = label=traffic_lane, pts={60,10:110,10:110,-160:60,-160}
 }
