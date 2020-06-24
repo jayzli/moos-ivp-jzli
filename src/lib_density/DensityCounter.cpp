@@ -330,7 +330,7 @@ string DensityCounter::getUtilities()
     double speed = p->first;
     int density = p->second;   
     string speed_str =doubleToStringX(speed);
-    int utility = 100 - 25 * density;
+    int utility = 100 - 20 * density;
     string utility_str = intToString(utility);
     utilities += speed_str;
     utilities += ":";

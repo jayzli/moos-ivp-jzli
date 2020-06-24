@@ -53,24 +53,28 @@ protected: // Configuration parameters
   WaypointEngine m_waypoint_engine;
   XYPolygon    m_new_poly; //polygong representing traffic lane
   double       m_t_dist; //transition distance, default is 0
+  double       m_t_period;//tranistion period, default is 60 secs
+  double       m_a_dist;//activation distance
 
 protected: // State variables
-  string m_density_str;
+  string       m_density_str;
   double       m_osx;              // Curr owhship x/lon (mtrs)
   double       m_osy;              // Curr ownship y/lat (mtrs)
   double       m_osh;              // Curr ownship Heading (degs)
   double       m_osv;              // Curr ownship Speed (m/s)
   double       m_goal_x;
   double       m_goal_y;
-  bool         active;
 
   XYPoint      m_t_point;
+  XYPoint      m_a_point;
   XYSegList    m_seglist;
+
   
   bool         m_goal_set;
   bool         m_polygon_set;
   bool         m_past_tpoint;
   bool         m_in_poly;
+  bool         m_past_apoint;
 };
 
 #define IVP_EXPORT_FUNCTION

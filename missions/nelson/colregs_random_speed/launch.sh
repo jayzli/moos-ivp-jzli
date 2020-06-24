@@ -1,4 +1,6 @@
 #!/bin/bash
+source ~/.bashrc
+cd /Users/johnli/moos-ivp-jzli/missions/nelson/avoidcol_random_speed/   
 #-----------------------------------------------------
 # script : launch_vehicle.sh
 # Author: John Li
@@ -52,14 +54,14 @@ fi
 # Launch ownship nelson
 #-------------------------------------------------------
 VNAME1="nelson"         # The testing vehicle Community
-START_POS1="x=-20,y=-75"      # Start in the middle
+START_POS1="x=-90,y=-75"      # Start in the middle
 START_HEADING1=$(expr 90 + $((RANDOM % 20 - 10)))
 START1="${START_POS1}, heading=${START_HEADING1}"
 
 nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
     VNAME=$VNAME1          SHARE_LISTEN="9301"              \
     VPORT="9001"           SHORE_LISTEN=$SHORE_LISTEN       \
-    START_POS=$START1 #for uSimMarine
+    GROUP='red'            START_POS=$START1 #for uSimMarine
 
 TRANSIT_SPEED1=$((RANDOM % 5 + 1))
 LOITER_POS1="180,-75"
@@ -86,6 +88,7 @@ STARTPOLY=(`cat startpolygons.txt`)  #start polygons are set by user in txt file
 STARTNUM=`wc -l <startpolygons.txt` #number of starting polygons
 LOITERPOLY=(`cat loiterpolygons.txt`)  #loiter polygons are set by user in txt file
 LOITERNUM=`wc -l <loiterpolygons.txt` #number of loiter polygons
+GROUP='blue'
 sleep 1
 
 for INDEX in `seq 1 $AMT`;
@@ -107,7 +110,7 @@ do
     nsplug meta_vehicle.moos targ_$VNAME.moos -f WARP=$TIME_WARP \
 	   VNAME=$VNAME          SHARE_LISTEN=$LPORT              \
 	   VPORT=$VPORT           SHORE_LISTEN=$SHORE_LISTEN       \
-	   START_POS=$START
+	   START_POS=$START       GROUP=$GROUP
     nsplug meta_vehicle.bhv targ_$VNAME.bhv -f VNAME=$VNAME   \
 	   START_POS=$START  LOITER_POS=$LOITER_POS           \
 	   TRANSIT_SPEED=$SPEED
@@ -124,3 +127,4 @@ uMAC targ_shoreside.moos
 printf "Killing all processes ... \n"
 ktm
 printf "Done killing processes.   \n"
+./analysis.sh

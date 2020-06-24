@@ -171,6 +171,7 @@ ProcessConfig = uProcessWatch
 
    condition = DEPLOY_ALL = true                                 
 
+   ignore_group = blue
    encounter_flag = ENCOUNTER = $CPA                             
    collision_flag = COLLISION = $CPA                             
    near_miss_flag = NEAR_MISS = vname1=$V1,vname2=$V2,cpa=$CPA   

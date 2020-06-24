@@ -50,10 +50,13 @@ BHV_DensityCount::BHV_DensityCount(IvPDomain domain) :
 
   m_goal_set = false;
   m_polygon_set = false;
-  m_past_tpoint = false;
+  m_past_tpoint = true;
   m_in_poly = false;
+  m_past_apoint = false;
 
   m_t_dist = 0;
+  m_t_period = 60;
+  m_a_dist = 0;
   // Add any variables this behavior needs to subscribe for
   addInfoVars("NAV_X, NAV_Y, NAV_HEADING, NAV_SPEED, DENSITYUTIL, VIEW_POINT");
 }
@@ -88,6 +91,17 @@ bool BHV_DensityCount::setParam(string param, string val)
     if((dval < 0) || (!isNumber(val)))                                  
       return(false);                                                  
     m_t_dist = dval;
+    return(true);
+  }
+
+  else if(param == "transition_period") {
+    double dval = atof(val.c_str());                                 
+    if((dval < 0) || (!isNumber(val)))                                  
+      return(false);                                                  
+    m_t_period = dval;
+    m_a_dist = m_t_period * 1.5;
+    string str1 = doubleToString(m_a_dist);
+    postMessage("ACTIVATION_POINT", "Activation is  "+str1+" from t point");
     return(true);
   }
   else if(param == "visual_hints")  {
@@ -186,9 +200,10 @@ IvPFunction* BHV_DensityCount::onRunState()
   bool ok5;                                              
   m_density_str = getBufferStringVal("DENSITYUTIL", ok5);                    
   if(!ok1) {   
-    postWMessage("No Density Count provided for ownship");
+    postEMessage("No Density Count provided for ownship");
     return(0);                  
-  }                                                                                     
+  }
+  
   bool ok6;
   string goal_str = getBufferStringVal("VIEW_POINT", ok6);
   if(!ok6)  {
@@ -200,10 +215,18 @@ IvPFunction* BHV_DensityCount::onRunState()
 
   postViewablePolygon();
   inPolygon();
-  
-  if (!m_past_tpoint || !m_in_poly)  {
+
+  string str1 = boolToString(m_past_tpoint);
+  string str2 = boolToString(m_in_poly);
+  postMessage("TPOINT_INPOLY", str1+str2);
+  //only produce ipf if vessel is not in polygon and not past transition point
+  if (!m_past_tpoint && !m_in_poly)  {
     // find and display transition point
     findTransitionPoint();
+
+    // if before activation point don't return ipf
+    if (!m_past_apoint)
+      return(0);
     
      // Part 1: Build the IvP function
     IvPFunction *ipf = 0;
@@ -311,9 +334,17 @@ void BHV_DensityCount::handleViewPoint(string val)
   string y_val = str_vector[1];
   string str1=biteStringX(x_val, '=');
   string str2=biteStringX(y_val, '=');
-  m_goal_x = atof(x_val.c_str());
-  m_goal_y = atof(y_val.c_str());
-  m_goal_set = true;
+  double goal_x = atof(x_val.c_str());
+  double goal_y = atof(y_val.c_str());
+  //determine if new goal is the same as previous goal
+  if (m_goal_x != goal_x || m_goal_y != goal_y)  {
+    m_goal_x = goal_x;
+    m_goal_y = goal_y;
+    m_goal_set = true;
+    m_past_tpoint = false;
+    m_past_apoint = false;
+    postMessage("NEW_GOAL", val);
+  }
 }
 
 
@@ -332,22 +363,31 @@ void BHV_DensityCount::findTransitionPoint()
     double dist = m_new_poly.dist_to_poly(m_osx, m_osy, rel_ang);
     postMessage("DIST_TO_POLY", doubleToStringX(dist));
 
-    //dist -= m_t_dist; //change to transition distance
-
+    if(m_a_dist > dist)
+      m_past_apoint = true;
+    else{
+      m_past_apoint = false;
+      double dist_to_a = dist - m_a_dist;
+      m_a_point = projectPoint(rel_ang, dist_to_a, m_osx, m_osy);
+    }
+    
     if(dist > m_t_dist)  {
       dist -= m_t_dist;
       XYPoint end_pt = projectPoint(rel_ang, dist, m_osx, m_osy);
       m_seglist.clear(); 
       m_seglist.set_active(true);
       m_seglist.add_vertex(m_osx, m_osy);
+      if (!m_past_apoint) {
+        m_seglist.add_vertex(m_a_point);
+      }
       m_seglist.add_vertex(end_pt);
-      m_seglist.set_label("vector to transition point: " + end_pt.get_spec());
+      m_seglist.set_label("vector to transition point");
       postMessage("VIEW_SEGLIST", m_seglist.get_spec());
     }
     
     else {
       m_past_tpoint = true; 
-      postMessage("PAST_TPOINT","Behavior not active past transition point");
+      postMessage("PAST_TPOINT","Vessel past transition point");
     }
   }
 }
@@ -364,9 +404,11 @@ void BHV_DensityCount::inPolygon()
   if(m_goal_set && m_polygon_set) {
     if(m_new_poly.contains(m_osx, m_osy)) {
        m_in_poly = true;
-       postMessage("IN_PLOYGON", "Behavior not active in traffic lane");
+       postMessage("IN_PLOYGON", "Vessel in traffic lane");
     }
-    else
+    else {
        m_in_poly = false;
+       postMessage("OUT_PLOYGON", "Vessel not inside traffic lane");
+    }
   }
 }

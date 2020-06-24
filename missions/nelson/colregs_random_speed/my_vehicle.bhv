@@ -81,30 +81,45 @@ Behavior = BHV_StationKeep
         visual_hints = vertex_size=0, edge_color=gray50, label_color=invisible
 }
 
-//----------------------------------------------                        
-Behavior = BHV_AvdColregsV19                                            
-{                                                                       
-  name       = avdcol                                                  
-  pwt        = 150                                                      
-  condition  = AVOID = true                                             
-  condition  = MODE==ACTIVE                                             
-  updates    = CONTACT_INFO                                             
-  endflag    = CONTACT_RESOLVED = $[CONTACT]                            
-  templating = spawn                                                    
-                                                                        
-             contact = to-be-set                                        
-    on_no_contact_ok = true                                             
-         extrapolate = true                                             
-               decay = 30,60                                            
-                                                                        
-    giveway_bow_dist = 10                                               
-        use_refinery = true                                             
-                                                                        
-      pwt_outer_dist = 35                                               
-      pwt_inner_dist = 10                                               
-      completed_dist = 45                                               
-   min_util_cpa_dist = 10                                               
-   max_util_cpa_dist = 18                                               
-           pwt_grade = linear                                           
- bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0         
-}                       
+//-----------------------------------------------
+Behavior = BHV_AvoidCollision
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = avdcollision                   
+  pwt          = 100                              
+  condition    = AVOID = true                    
+  updates      = CONTACT_INFO                   
+  endflag = CONTACT_RESOLVED = $[CONTACT] 
+  templating   = spawn
+
+  // General Contact Behavior Parameters
+  // ----------------------------------
+  
+           contact = to-be-set            
+             decay = 15,30           
+       extrapolate = true            
+  on_no_contact_ok = true            
+       time_on_leg = 60              
+
+
+ // Parameters specific to this behavior
+ // ------------------------------------
+    completed_dist = 45       
+ max_util_cpa_dist = 20       
+ min_util_cpa_dist = 10       
+  no_alert_request = false     
+         pwt_grade = linear     
+    pwt_inner_dist = 10    
+    pwt_outer_dist = 35   
+ }
+
+//-----------------------------------------------
+Behavior = BHV_DensityCount
+{
+  name     = density-counter
+  pwt      = 200
+  transition_distance = 10
+
+  polygon  = label=traffic_lane, pts={60,10:140,10:140,-160:60,-160}
+}
