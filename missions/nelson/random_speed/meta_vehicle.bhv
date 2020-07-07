@@ -33,13 +33,14 @@ Behavior = BHV_Waypoint
   name       = waypt_destination
   pwt          = 100
   condition = MODE==LOITERING
-  runflag    = VEHICLE_UNDERWAY = TRUE                                            activeflag = EAST = true
+  runflag    = VEHICLE_UNDERWAY = TRUE
+  activeflag = EAST = true
   endflag   = RETURN = true
   endflag   = LOITER = false					
 
     speed = $(TRANSIT_SPEED)
-   radius = 4.0
-slip_radius = 10.0
+   radius = 5.0
+slip_radius = 15.0
     point = $(LOITER_POS)
    repeat = 10
    lead = 8
@@ -58,8 +59,8 @@ Behavior = BHV_Waypoint
   endflag   = RETURN = false
   
       speed = 1.3
-     radius = 4.0
-  slip_radius = 10.0
+     radius = 5.0
+  slip_radius = 15.0
       point = $(START_POS)
      repeat = 10
        lead = 8

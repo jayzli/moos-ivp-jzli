@@ -33,18 +33,20 @@ Behavior = BHV_Waypoint
   name       = waypt_destination
   pwt          = 100
   condition = MODE==LOITERING
+  configflag = TRANSIT_SPEED=$(SPEED)
+  runflag = NEXT_PT=$[NX],$[NY]
+  wptflag_on_start = true 
   runflag    = VEHICLE_UNDERWAY = TRUE                                            
   endflag   = RETURN  = true   
   endflag   = LOITER  = false
   activeflag = CUR_WPOINT = $(X), $(Y)
-  wptflag    = HITPTS = $(X), $(Y)
-  speed = 1.3
-   speed_alt = 3
-   radius = 3.0
-   nm_radius = 15.0
-   point = $(LOITER_POS)
-   repeat = 10
-   lead = 8
+  speed = $(TRANSIT_SPEED)
+  speed_alt = 3
+  radius = 5.0
+  slip_radius = 15.0
+  point = $(LOITER_POS)
+  repeat = 10
+  lead = 8
 }
 
 
@@ -57,9 +59,12 @@ Behavior = BHV_Waypoint
   condition = MODE==RETURNING
   endflag   = LOITER = true
   endflag   = RETURN = false
-  activeflag = CUR_WPOINT = $ (X), $(Y)
-     speed = 1.3
-     radius = 3.0
+  configflag = TRANSIT_SPEED=$(SPEED)                                                  
+  runflag = NEXT_PT=$[NX],$[NY]                                                      
+  wptflag_on_start = true    
+  activeflag = CUR_WPOINT = $(X), $(Y)
+     speed = $(TRANSIT_SPEED)  
+     radius = 5.0
   slip_radius = 15.0
       point = $(START_POS)
      repeat = 10
@@ -86,11 +91,3 @@ Behavior = BHV_StationKeep
 }
 
 //-----------------------------------------------
-Behavior = BHV_DensityCount
-{
-  name     = density-counter
-  pwt      = 200
-  transition_distance = 10
-  transition_period = 60 //in seconds
-  polygon  = label=traffic_lane, pts={60,30:110,30:110,-190:60,-190}
-}

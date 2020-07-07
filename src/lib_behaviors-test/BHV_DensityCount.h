@@ -30,7 +30,7 @@ public:
 
   void         handleVisualHint(std::string);
   void         postViewablePolygon();
-  void         handleViewPoint(string val);
+  void         handleNextPoint(string val);
   void         findTransitionPoint();
   void         inPolygon();
 
@@ -68,7 +68,7 @@ protected: // State variables
   XYPoint      m_t_point;
   XYPoint      m_a_point;
   XYSegList    m_seglist;
-
+  double       m_t_speed;
   
   bool         m_goal_set;
   bool         m_polygon_set;

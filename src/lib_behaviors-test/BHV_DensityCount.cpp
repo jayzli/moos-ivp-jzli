@@ -58,7 +58,7 @@ BHV_DensityCount::BHV_DensityCount(IvPDomain domain) :
   m_t_period = 60;
   m_a_dist = 0;
   // Add any variables this behavior needs to subscribe for
-  addInfoVars("NAV_X, NAV_Y, NAV_HEADING, NAV_SPEED, DENSITYUTIL, VIEW_POINT");
+  addInfoVars("NAV_X, NAV_Y, NAV_HEADING, NAV_SPEED, DENSITYUTIL, VIEW_POINT, TRANSIT_SPEED");
 }
 
 //---------------------------------------------------------------
@@ -211,8 +211,19 @@ IvPFunction* BHV_DensityCount::onRunState()
     return(0);
   }
   else 
-    handleViewPoint(goal_str);
+    handleNextPoint(goal_str);
 
+  bool ok7;
+  string speed_str = getBufferStringVal("TRANSIT_SPEED", ok7);
+  if(!ok7)  {
+    postEMessage("No speed info in info_buffer.");
+    return(0);
+  }
+  else   {
+    m_t_speed=atof(speed_str.c_str());
+    m_a_dist = m_t_period * m_t_speed;
+  }
+  
   postViewablePolygon();
   inPolygon();
 
@@ -327,13 +338,13 @@ void BHV_DensityCount::handleVisualHint(string hint)
 
 //---------------------------------------------------------
 //Procedure: handleViewPoint()
-void BHV_DensityCount::handleViewPoint(string val)
+void BHV_DensityCount::handleNextPoint(string val)
 {
   vector<string> str_vector = parseString(val, ',');
-  string x_val = str_vector[0]; 
+  string x_val = str_vector[0];
   string y_val = str_vector[1];
-  string str1=biteStringX(x_val, '=');
-  string str2=biteStringX(y_val, '=');
+  string str1 = biteStringX(x_val, '=');
+  string str2 = biteStringX(y_val, '='); 
   double goal_x = atof(x_val.c_str());
   double goal_y = atof(y_val.c_str());
   //determine if new goal is the same as previous goal
