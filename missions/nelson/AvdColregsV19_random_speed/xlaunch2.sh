@@ -11,8 +11,8 @@ cd /Users/johnli/moos-ivp-jzli/missions/nelson/AvdColregsV19_random_speed/
 trap "kill -- -$$" EXIT SIGTERM SIGHUP SIGINT SIGKILL
 TIME_WARP=15
 FLOW_DOWN_ARGS=""
-AMT=30
-MAX_TIME=21000
+AMT=500
+MAX_TIME=18000
 #-------------------------------------------------------
 #  Part 2: Check for and handle command-line arguments
 #-------------------------------------------------------

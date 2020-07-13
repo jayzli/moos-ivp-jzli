@@ -105,7 +105,7 @@ Behavior = BHV_AvdColregsV19
   // ----------------------------------
   
            contact = to-be-set            
-             decay = 15,30           
+             decay = 0,0           
        extrapolate = true            
   on_no_contact_ok = true            
        time_on_leg = 60              
