@@ -42,8 +42,8 @@ Behavior = BHV_Waypoint
   activeflag = CUR_WPOINT = $(X), $(Y)
   speed = $(TRANSIT_SPEED)
   speed_alt = 3
-  radius = 5.0
-  slip_radius = 15.0
+  radius = 10.0
+  slip_radius = 20.0
   point = $(LOITER_POS)
   repeat = 10
   lead = 8
@@ -64,8 +64,8 @@ Behavior = BHV_Waypoint
   wptflag_on_start = true    
   activeflag = CUR_WPOINT = $(X), $(Y)
      speed = $(TRANSIT_SPEED)  
-     radius = 5.0
-  slip_radius = 15.0
+     radius = 10.0
+  slip_radius = 20.0
       point = $(START_POS)
      repeat = 10
        lead = 8

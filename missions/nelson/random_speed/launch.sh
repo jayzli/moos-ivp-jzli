@@ -62,7 +62,7 @@ nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
     GROUP='red'            START_POS=$START1 #for uSimMarine
 
 TRANSIT_SPEED1=$((RANDOM % 5 + 3))
-LOITER_POS1="180,-75"
+LOITER_POS1="270,-75"
 TRANSIT_SPEED2=(`pickpos --amt=1 --spd=1:5`)
 nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
     START_POS=$START1 LOITER_POS=$LOITER_POS1           \

@@ -14,7 +14,7 @@ ProcessConfig = pBasicContactMgr
   display_radii   = true
 
   default_alert_range = 20
-  default_cpa_range   = 28
+  default_cpa_range   = 30
   default_alert_range_color = gray70
   default_cpa_range_color   = gray30
 

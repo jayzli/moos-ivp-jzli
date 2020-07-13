@@ -178,9 +178,9 @@ ProcessConfig = uProcessWatch
    collision_flag = COLLISION = $CPA                             
    near_miss_flag = NEAR_MISS = vname1=$V1,vname2=$V2,cpa=$CPA   
 
-   encounter_range = 10        // (the default) in meters        
-   near_miss_range = 6         // (the default) in meters        
-   collision_range = 3         // (the default) in meters        
+   encounter_range = 50        // (the default) in meters        
+   near_miss_range = 10         // (the default) in meters        
+   collision_range = 5        // (the default) in meters        
 
    pulse_render   = true       // (the default)                  
    pulse_range    = 20         // (the default) in meters        

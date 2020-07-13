@@ -24,7 +24,7 @@ Processconfig = ANTLER
   Run = uFldNodeBroker   @ NewConsole = false
   Run = uFldMessageHandler  @ NewConsole = false
   Run = pBasicContactMgr @ NewConsole = false
-  Run = pTrafficDensity  @ NewConsole = new
+  Run = pTrafficDensity  @ NewConsole = false
 }
 
 //------------------------------------------------------------
@@ -46,7 +46,7 @@ ProcessConfig = pTrafficDensity
   AppTick    = 2
   CommsTick  = 2
   step_size  = 1
-  range_limit = 100
+  range_limit = 70
 }
 
 #include plug_uFldNodeBroker.moos
