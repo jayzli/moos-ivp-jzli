@@ -12,7 +12,7 @@ trap "kill -- -$$" EXIT SIGTERM SIGHUP SIGINT SIGKILL
 TIME_WARP=15
 FLOW_DOWN_ARGS=""
 AMT=500
-MAX_TIME=18000
+MAX_TIME=21000
 #-------------------------------------------------------
 #  Part 2: Check for and handle command-line arguments
 #-------------------------------------------------------
