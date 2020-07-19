@@ -1,0 +1,87 @@
+ServerHost = localhost
+ServerPort = $(VPORT)
+Simulator  = true
+
+// Community name IS the vehicle name
+Community  = $(VNAME)
+
+#include plug_origin_warp.moos
+  
+//------------------------------------------------------------
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 100
+   
+  Run = MOOSDB           @ NewConsole = false
+  Run = uProcessWatch    @ NewConsole = false
+  Run = pShare           @ NewConsole = false
+  Run = uSimMarine       @ NewConsole = false
+  Run = pLogger          @ NewConsole = false
+  Run = pNodeReporter    @ NewConsole = false
+  Run = pMarinePID       @ NewConsole = false
+  Run = pHelmIvP         @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = uFldNodeBroker   @ NewConsole = false
+  Run = uFldMessageHandler  @ NewConsole = false
+  Run = pBasicContactMgr @ NewConsole = false
+  Run = pTrafficDensity @ NewConsole = false     
+}
+
+//------------------------------------------------------------
+// uFldMessageHandler
+
+ProcessConfig = uFldMessageHandler
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  strict_addressing = false
+}
+
+//-----------------------------------------------------------
+// pTrafficDensity configuration block
+
+ProcessConfig = pTrafficDensity
+{
+  AppTick    = 2
+  CommsTick  = 2
+  step_size  = 1
+  range_limit = 100
+}
+
+//--------------------------------------------------------
+// pBasicContactMgr Configuration Block
+// Can't use plug because ignore_group config is not applicable
+
+ProcessConfig = pBasicContactMgr
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  decay = 3,10
+
+  alert_verbose = true
+
+  contact_max_age = 3600
+  display_radii   = true
+
+  default_alert_range = 20
+  default_cpa_range   = 30
+  default_alert_range_color = gray70
+  default_cpa_range_color   = gray30
+  
+  alert = id=avd, var=CONTACT_INFO, val="name=$[VNAME] # contact=$[VNAME]"
+  alert = id=avd, alert_range=35, cpa_range=45, alert_range_color=green, cpa_range_color =red
+ // alert = id=avd, cpa_range_color=invisible
+}
+
+#include plug_uFldNodeBroker.moos
+#include plug_pShare.moos
+#include plug_pHostInfo.moos
+#include plug_uSimMarine.moos
+#include plug_pHelmIvP.moos
+#include plug_pMarinePID.moos
+#include plug_pLogger.moos
+#include plug_pNodeReporter.moos
+#include plug_uProcessWatch.moos
+
