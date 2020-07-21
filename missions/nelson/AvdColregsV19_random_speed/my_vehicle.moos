@@ -24,7 +24,7 @@ Processconfig = ANTLER
   Run = uFldNodeBroker   @ NewConsole = false
   Run = uFldMessageHandler  @ NewConsole = false
   Run = pBasicContactMgr @ NewConsole = false
-  Run = pTrafficDensity  @ NewConsole = new
+  Run = pTrafficDensity  @ NewConsole = fasle
 }
 
 //------------------------------------------------------------
@@ -46,7 +46,8 @@ ProcessConfig = pTrafficDensity
   AppTick    = 2
   CommsTick  = 2
   step_size  = 1
-  range_limit = 100
+  range_limit = 45
+  max_speed = 5
 }
 
 //--------------------------------------------------------
@@ -58,7 +59,7 @@ ProcessConfig = pBasicContactMgr
   AppTick   = 2
   CommsTick = 2
 
-  decay = 0,0
+  decay = 3,10
 
   alert_verbose = true
 

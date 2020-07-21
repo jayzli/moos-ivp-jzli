@@ -33,8 +33,9 @@ DensityCounter::DensityCounter()
 
   m_step = 1;  //in seconds
   m_range = 50; //in meters
-  m_max_speed = 5; //max speed meters per second
+  m_max_speed = 15; //max speed in knots
   
+  m_density = 0;
 }
 
 //---------------------------------------------------------
@@ -84,16 +85,16 @@ void DensityCounter::calCount()
       for (int i=1; i<step_limit; i++) {
 	cout<<"*****************step "<<i<<"**********************"<<endl;
 
-	own_x = own_x + m_step * sim_speed * cos(m_goal_heading);
-	own_y =  own_y + m_step * sim_speed * sin(m_goal_heading);
+	own_x = own_x + m_step * sim_speed * cos(m_goal_heading*MPI/180);
+	own_y =  own_y + m_step * sim_speed * sin(m_goal_heading*MPI/180);
         cout<<"ship x and y are: "<<own_x<<" "<<own_y<<endl;
-	
+
 	double min_range = m_min_range;//this is the minimum range for a particular time slot
 	int density_count = 0;
 	
         //third loop goes through all contacts tracked by the class
 	map<string, double>::iterator q;	
-	for (q=map_contact_x.begin(); q!=map_contact_x.end();q++){
+	for (q=map_contact_x.begin(); q!=map_contact_x.end();){
 	  string      vname = q->first;
 	  double  contact_x = q->second;
 	  double  contact_y = map_contact_y[vname];
@@ -126,17 +127,16 @@ void DensityCounter::calCount()
 	    closest = vname;
 	   }
 
+	  //if any ship is within min_cpa set 
+	  if (range < m_range){
+	    density_count++;
+	    
+	  }
+
 	  if (min_range < min_cpa){
 	    min_cpa=min_range;
 	  }
 	  
-	  //if any ship is within min_cpa set 
-	  if (range < m_range){
-	    density_count++;	    
-	  }
-
-	  //removed this block to simulate further even if contact opens
-	  #if 0
       	  //once range start opening, stop simulating forward
 	  if (i != 1 && range > map_contact_range[vname]){
 	    cout<<vname<<" is opening at step "<<i<<endl;
@@ -145,7 +145,6 @@ void DensityCounter::calCount()
 	    q++;
 	    map_contact_range[vname]=range;
 	  }
-	  #endif
 
 	  cout<<"----------------------------------------------"<<endl;
         }//end of third for loop
@@ -171,9 +170,8 @@ void DensityCounter::calCount()
      m_map_min_range[sim_speed] = min_cpa;
      m_map_closest_contact[sim_speed] = closest;
 
-     cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
+     cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"<<endl;
   }//end of first for loop
-  cout<<"-------------------------------------------------------------------"<<endl; 
 }
 
 //-------------------------------------------------------------

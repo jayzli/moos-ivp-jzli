@@ -24,6 +24,7 @@ class DensityCounter
   void setRange(double v)                       {m_range=v;}
   void setStep(double v)                         {m_step=v;}
   void setMaxSpeed(double v)                {m_max_speed=v;}
+  int getDensity() const                {return(m_density);}
   
  public:
   //bool InRange(double m_range);
@@ -83,7 +84,8 @@ class DensityCounter
   double m_range;  // Range is the distance limit for density calculation 
   double m_step;  // Step is the temporal increment in seconds 
   double m_max_speed; //Max speed to be considered
-
+  
+  int m_density; 
 };
 
 #endif 

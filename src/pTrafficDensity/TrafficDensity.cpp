@@ -22,9 +22,9 @@ using namespace std;
 TrafficDensity::TrafficDensity()
 {
   // Configuration Variables
-  m_range = 70; //default to 50 meters
-  m_step = .5;//defaults to .5 seconds
-  m_max_speed = 15;//defaults to 15 knots
+  m_range = 100; //default to 100 meters
+  m_step = 1;//defaults to 1 second
+  m_max_speed = 10;//defaults to 10 knots
 
   m_nav_x   = 0;                                                                 
   m_nav_y   = 0;                                                                
@@ -42,7 +42,6 @@ TrafficDensity::TrafficDensity()
   m_goal_x = 0;
 
   m_goal_y = 0;
-  //m_contact_count[0] = 0;
   
 }
 
@@ -154,9 +153,9 @@ bool TrafficDensity::OnStartUp()
   if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
     list<string>::iterator p;
     for(p=sParams.begin(); p!=sParams.end(); p++) {
-      string original_line = *p;
-      string param = stripBlankEnds(toupper(biteString(*p, '=')));
-      string value = stripBlankEnds(*p);
+      string line = *p;
+      string param = tolower(biteStringX(line, '='));
+      string value = line;
       
       if(param == "step_size") {
         m_step = atof(value.c_str());

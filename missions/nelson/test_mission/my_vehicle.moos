@@ -46,7 +46,8 @@ ProcessConfig = pTrafficDensity
   AppTick    = 2
   CommsTick  = 2
   step_size  = 1
-  range_limit = 100
+  range_limit = 45
+  max_speed = 5
 }
 
 //--------------------------------------------------------

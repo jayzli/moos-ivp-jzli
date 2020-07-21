@@ -42,8 +42,8 @@ Behavior = BHV_Waypoint
   activeflag = CUR_WPOINT = $(X), $(Y)
   speed = $(TRANSIT_SPEED)
   speed_alt = 3
-  radius = 5.0
-  slip_radius = 15.0
+  radius = 10
+  slip_radius = 20
   point = $(LOITER_POS)
   repeat = 10
   lead = 8
@@ -63,8 +63,8 @@ Behavior = BHV_Waypoint
   wptflag_on_start = true    
   activeflag = CUR_WPOINT = $(X), $(Y)
      speed = $(TRANSIT_SPEED)  
-     radius = 5.0
-  slip_radius = 15.0
+     radius = 10
+  slip_radius = 20
       point = $(START_POS)
      repeat = 10
        lead = 8
@@ -105,7 +105,7 @@ Behavior = BHV_AvdColregsV19
   // ----------------------------------
   
            contact = to-be-set            
-             decay = 0,0           
+             decay = 3,10           
        extrapolate = true            
   on_no_contact_ok = true            
        time_on_leg = 60              
@@ -127,7 +127,7 @@ Behavior = BHV_DensityCount
 {
   name     = density-counter
   pwt      = 200
-  transition_distance = 20
+  transition_distance = 35
   transition_period = 60
   polygon  = label=traffic_lane, pts={60,90:110,90:110,-270:60,-270}
 }
