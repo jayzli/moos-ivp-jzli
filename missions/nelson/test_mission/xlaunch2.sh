@@ -86,6 +86,7 @@ RESULTS_DIR="results_"`date "+%Y_%m_%d_____%H_%M"`
 mkdir $RESULTS_DIR
 mv targ* *LOG* $RESULTS_DIR
 mv result.txt $RESULTS_DIR
+mv table.csv $RESULTS_DIR
 echo "Completely done with xlaunch."
 
 # HELM_BHV_PARAM = type=AvdColregsV19, name=avd_col_foo, param=pwt_outer_dist, value=35

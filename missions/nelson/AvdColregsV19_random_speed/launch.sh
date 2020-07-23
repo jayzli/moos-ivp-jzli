@@ -52,7 +52,7 @@ fi
 # Launch ownship nelson
 #-------------------------------------------------------
 VNAME1="nelson"         # The testing vehicle Community
-START_POS1="x=-100,y=-75"      # Start in the middle
+START_POS1="x=-200,y=-75"      # Start in the middle
 START_HEADING1=$(expr 90 + $((RANDOM % 20 - 10)))
 START1="${START_POS1}, heading=${START_HEADING1}"
 
@@ -62,7 +62,7 @@ nsplug my_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
     GROUP='own'            START_POS=$START1 #for uSimMarine
 
 TRANSIT_SPEED1=$((RANDOM % 5 + 3))
-LOITER_POS1="270,-75"
+LOITER_POS1="370,-75"
 TRANSIT_SPEED2=(`pickpos --amt=1 --spd=1:5`)
 nsplug my_vehicle.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
     START_POS=$START1 LOITER_POS=$LOITER_POS1           \

@@ -23,12 +23,16 @@ done
 alogcd LOG*${FILENAME}*/*.alog > alogcd.txt
 cat alogcd.txt
 ENCOUNTER=`cat alogcd.txt | grep Encounters: |cut -d' ' -f3`
+EAVG=`cat alogcd.txt | grep Encounters: |cut -d' ' -f6`
 MISSES=`cat alogcd.txt | grep Misses: |cut -d' ' -f3`
+MAVG=`cat alogcd.txt | grep Misses: |cut -d' ' -f6`
 COLLISIONS=`cat alogcd.txt | grep Collisions: |cut -d' ' -f3`
-WORST=`cat alogcd.txt | grep Worst: |cut -d' ' -f3`
-a=$(($COLLISIONS * 10))
-b=$(($MISSES * 5))
-c=$(($ENCOUNTER * 2))
-SCORE=$(($c - $a ))
-SCORE=$(($SCORE - $b))
-echo The score for this run is $SCORE
+CAVG=`cat alogcd.txt | grep Collisions: |cut -d' ' -f6`
+#WORST=`cat alogcd.txt | grep Worst: |cut -d' ' -f3`
+echo $ENCOUNTER,$EAVG,$MISSES,$MAVG,$COLLISIONS,$CAVG >table.csv
+#a=$(($COLLISIONS * 10))
+#b=$(($MISSES * 5))
+#c=$(($ENCOUNTER * 2))
+#SCORE=$(($c - $a ))
+#SCORE=$(($SCORE - $b))
+#echo The score for this run is $SCORE

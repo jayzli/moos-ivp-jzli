@@ -11,8 +11,8 @@ cd /Users/johnli/moos-ivp-jzli/missions/nelson/AvdColregsV19_random_speed/
 trap "kill -- -$$" EXIT SIGTERM SIGHUP SIGINT SIGKILL
 TIME_WARP=15
 FLOW_DOWN_ARGS=""
-AMT=200
-MAX_TIME=9000
+AMT=900
+MAX_TIME=12000
 #-------------------------------------------------------
 #  Part 2: Check for and handle command-line arguments
 #-------------------------------------------------------
@@ -50,7 +50,7 @@ LAUNCH_PID=$!
 #-------------------------------------------------------
 #  Part 4: Start the mission with the right pokes
 #-------------------------------------------------------
-sleep 5
+sleep 10
 echo "Poking...." 
 uPokeDB targ_shoreside.moos DEPLOY_ALL=true MOOS_MANUAL_OVERRIDE_ALL=false
 
@@ -86,6 +86,7 @@ RESULTS_DIR="results_"`date "+%Y_%m_%d_____%H_%M"`
 mkdir $RESULTS_DIR
 mv targ* *LOG* $RESULTS_DIR
 mv result.txt $RESULTS_DIR
+mv table.csv $RESULTS_DIR
 echo "Completely done with xlaunch."
 
 # HELM_BHV_PARAM = type=AvdColregsV19, name=avd_col_foo, param=pwt_outer_dist, value=35

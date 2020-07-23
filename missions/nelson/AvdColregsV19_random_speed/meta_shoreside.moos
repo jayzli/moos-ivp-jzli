@@ -121,7 +121,7 @@ ProcessConfig = pMarineViewer
   TIFF_FILE            = forrest19.tif
   set_pan_x            = -90
   set_pan_y            = -280
-  zoom                 = 0.65
+  zoom                 = 0.4
   vehicles_shape_scale = 1.5
   vehicles_name_viewable = names
 
@@ -176,10 +176,10 @@ ProcessConfig = uProcessWatch
    ignore_group = contacts
    encounter_flag = ENCOUNTER = $CPA                             
    collision_flag = COLLISION = $CPA                             
-   near_miss_flag = NEAR_MISS = vname1=$V1,vname2=$V2,cpa=$CPA   
+   near_miss_flag = NEAR_MISS = $CPA   
 
-   encounter_range = 50        // (the default) in meters        
-   near_miss_range = 10         // (the default) in meters        
+   encounter_range = 70        // (the default) in meters        
+   near_miss_range = 15         // (the default) in meters        
    collision_range = 5        // (the default) in meters        
 
    pulse_render   = true       // (the default)                  

@@ -46,7 +46,7 @@ ProcessConfig = pTrafficDensity
   AppTick    = 2
   CommsTick  = 2
   step_size  = 1
-  range_limit = 45
+  range_limit = 70
   max_speed = 5
 }
 
@@ -72,7 +72,6 @@ ProcessConfig = pBasicContactMgr
   default_cpa_range_color   = gray30
   
   alert = id=avd, var=CONTACT_INFO, val="name=$[VNAME] # contact=$[VNAME]"
-  alert = id=avd, alert_range=35, cpa_range=45, alert_range_color=green, cpa_range_color =red
  // alert = id=avd, cpa_range_color=invisible
 }
 

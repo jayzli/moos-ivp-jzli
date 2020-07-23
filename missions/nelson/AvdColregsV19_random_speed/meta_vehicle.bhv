@@ -44,6 +44,7 @@ slip_radius = 20
     point = $(LOITER_POS)
    repeat = 10
    lead = 8
+ capture_line = true
 }
 
 
@@ -64,6 +65,7 @@ Behavior = BHV_Waypoint
       point = $(START_POS)
      repeat = 10
        lead = 8
+        capture_line = true
 }
 
 //----------------------------------------------
@@ -109,13 +111,13 @@ Behavior = BHV_AvdColregsV19
 
  // Parameters specific to this behavior
  // ------------------------------------
-    completed_dist = 45       
- max_util_cpa_dist = 20       
+    completed_dist = 70       
+ max_util_cpa_dist = 30       
  min_util_cpa_dist = 10       
   no_alert_request = false     
          pwt_grade = linear     
-    pwt_inner_dist = 10    
-    pwt_outer_dist = 35   
+    pwt_inner_dist = 20    
+    pwt_outer_dist = 60   
  }
 
 //-----------------------------------------------
