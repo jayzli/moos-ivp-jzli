@@ -31,6 +31,10 @@ CAVG=`cat alogcd.txt | grep Collisions: |cut -d' ' -f6`
 #WORST=`cat alogcd.txt | grep Worst: |cut -d' ' -f3`
 FILEDIR=`date "+%m_%d_%H_%M"`  
 echo $ENCOUNTER,$EAVG,$MISSES,$MAVG,$COLLISIONS,$CAVG,'off',$FILEDIR >table.csv
+if [ $MISSES == 0 ] && [ $COLLISIONS == 0 ]
+then
+    rm -rf LOG*
+fi
 #a=$(($COLLISIONS * 10))
 #b=$(($MISSES * 5))
 #c=$(($ENCOUNTER * 2))

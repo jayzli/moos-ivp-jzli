@@ -1,17 +1,10 @@
-Analyzing collision encounters in file : LOG_SHORESIDE_23_7_2020_____18_15_00/LOG_SHORESIDE_23_7_2020_____18_15_00.alog
-+++++++++++++++++++++++++ (250,000) lines
-+++++++++++++++++++++++++ (500,000) lines
-+++++++++++++++++++++++++ (750,000) lines
-+++++++++++++++++++++++++ (1,000,000) lines
-+++++++++++++++++++++++++ (1,250,000) lines
-+++++++++++++++++++++++++ (1,500,000) lines
-+++++++++++++++++++++++++ (1,750,000) lines
-++++++
-1,814,701 total alog file lines.
+Analyzing collision encounters in file : LOG_SHORESIDE_24_7_2020_____23_30_01/LOG_SHORESIDE_24_7_2020_____23_30_01.alog
+
+6 total alog file lines.
 
 =========================================
 Collision Report:                        
 =========================================
-Encounters:  187  (avg 47.57 m)
-Near Misses: 2  (avg 14.90 m)
+Encounters:  0  (avg 0.00 m)
+Near Misses: 0  (avg 0.00 m)
 Collisions:  0  (avg 0.00 m)
